@@ -7,15 +7,19 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { Link } from "react-router-dom";
+import { Link, useAsyncValue } from "react-router-dom";
 import { Avatar, Popover } from "@mui/material";
 
 function Navbar() {
   const [username, setUsername] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorElMenu, setAnchorElMenu] = useState(null);
 
   const open = Boolean(anchorEl);
+  const openMenu = Boolean(anchorElMenu);
+
   const id = open ? "simple-popover" : undefined;
+  const cognito_url = process.env.REACT_APP_COGNIO_HOSTED_UI_SIGNIN_LINK;
 
   useEffect(() => {
     // Retrieve the username from session storage
@@ -29,45 +33,50 @@ function Navbar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const handleSignOut = () => {
+  const handleCloseMenu = () => {
+    setAnchorElMenu(null);
+  };
+  const handleSignOut = async() => {
     // Clear session storage and any sign-out logic
-    sessionStorage.clear();
+    console.log("signouting")
 
-    // try {
-    //   console.log(text);
-    //   const response = await fetch("/api/data/signout", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({ text }),
-    //   });
+    try {
+      const accessToken = sessionStorage.getItem('accessToken');
+      console.log("signouting")
 
-    //   const data = await response.json();
+      if (accessToken===undefined) {
+        throw new Error('No access token found');
+      }
+     
+      const response = await fetch('/api/auth/signout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ accessToken }),
+      });
 
-    //   if (!response.ok) {
-    //     throw new Error("Network response was not ok");
-    //   }
-
-    //   console.log(data);
-    //   // Assuming 'data' has the 'Entities' structure as shown
-    //   setKeyPhrases(data.KeyPhrases);
-    //   //   console.log(keyPhrases)
-    // } catch (error) {
-    //   console.error("Error:", error);
-    // }
-
-    console.log("User signed out");
+      if (!response.ok) {
+        throw new Error('Failed to sign out');
+      }else{
+        sessionStorage.clear();
+      }
+    } catch (err) {
+      
+    } 
     handleClose(); // Close the popover
   };
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const handleClickMenu = (event) => {
+    setAnchorElMenu(event.currentTarget);
+  };
+
   const handleLogin = () => {
-    window.location.href =
-      "https://evis-auth.auth.us-east-1.amazoncognito.com/login?client_id=23vl1an4efj02v4k6aedb1cfh4&response_type=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2F54.234.7.50%2F";
+    window.location.href = ""; //paste your cognito link here
     console.log("Redirecting to login...");
   };
 
@@ -83,13 +92,13 @@ function Navbar() {
           color="inherit"
           aria-label="menu"
           sx={{ mr: 2 }}
-          onClick={handleClick}
+          onClick={handleClickMenu}
         >
           <MenuIcon />
         </IconButton>
         <Menu
           id="menu-appbar"
-          anchorEl={anchorEl}
+          anchorEl={anchorElMenu}
           anchorOrigin={{
             vertical: "bottom",
             horizontal: "left",
@@ -99,25 +108,25 @@ function Navbar() {
             vertical: "top",
             horizontal: "left",
           }}
-          open={open}
-          onClose={handleClose}
+          open={openMenu}
+          onClose={handleCloseMenu}
         >
-          <MenuItem component={Link} to="/" onClick={handleClose}>
+          <MenuItem component={Link} to="/" onClick={handleCloseMenu}>
             Home
           </MenuItem>
-          <MenuItem component={Link} to="/roomcreate" onClick={handleClose}>
+          {/* <MenuItem component={Link} to="/roomcreate" onClick={handleCloseMenu}>
             My Rooms
           </MenuItem>
-          <MenuItem component={Link} to="/roomjoin" onClick={handleClose}>
+          <MenuItem component={Link} to="/roomjoin" onClick={handleCloseMenu}>
             Join Rooms
           </MenuItem>
-          <MenuItem component={Link} to="/userprofile" onClick={handleClose}>
+          <MenuItem component={Link} to="/userprofile" onClick={handleCloseMenu}>
             get Userprofile
-          </MenuItem>
+          </MenuItem> */}
 
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={handleCloseMenu}>
             <a
-              href="https://evis-auth.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=23vl1an4efj02v4k6aedb1cfh4&response_type=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback"
+              href="https://evis-auth.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=79jp9ca6spjm548a9o4pn2vs0f&response_type=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback"
               rel="noopener noreferrer"
               style={{ textDecoration: "none", color: "inherit" }}
             >
@@ -125,7 +134,11 @@ function Navbar() {
             </a>
           </MenuItem>
 
-          <MenuItem component={Link} to="/aboutus" onClick={handleClose}>
+          {/* <MenuItem component={Link} to="/keyphrase" onClick={handleCloseMenu}>
+            KeyPhrases
+          </MenuItem> */}
+
+          <MenuItem component={Link} to="/aboutus" onClick={handleCloseMenu}>
             About Us
           </MenuItem>
 
@@ -140,13 +153,11 @@ function Navbar() {
             <Avatar
               sx={{ bgcolor: "secondary.main", cursor: "pointer" }}
               onClick={handleClick}
-            >
-              T
-            </Avatar>
+            ></Avatar>
           )}
-          {/* <Popover
+          <Popover
             id={id}
-            open={open} 
+            open={open}
             anchorEl={anchorEl}
             onClose={handleClose}
             anchorOrigin={{
@@ -160,11 +171,11 @@ function Navbar() {
           >
             <Typography sx={{ p: 2 }}>
               Signed in as <strong>{username}</strong>
-            </Typography> */}
-          <Button onClick={handleSignOut} sx={{ m: 1 }}>
-            Sign Out
-          </Button>
-          {/* </Popover> */}
+            </Typography>
+            <Button onClick={handleSignOut} sx={{ m: 1 }}>
+              Sign Out
+            </Button>
+          </Popover>
         </div>
       </Toolbar>
     </AppBar>

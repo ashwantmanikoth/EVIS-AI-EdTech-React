@@ -10,6 +10,7 @@ import AuthCallback from "./Components/AuthCallback";
 import RoomCreatePage from "./Pages/RoomCreatePage";
 import RoomJoinPage from "./Pages/RoomJoinPage";
 import UserProfile from "./Components/UserProfile";
+import KeyPhrases from "./Components/KeyPhrases";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Navbar />
           <Routes>
             <Route path="/" element={<Body />} />
+            <Route path="/keyphrase" element={<KeyPhrases />} />
             <Route path="/userprofile" element={<UserProfile />} />
             <Route path="/roomcreate" element={<RoomCreatePage />} />
             <Route path="/roomjoin" element={<RoomJoinPage />} />

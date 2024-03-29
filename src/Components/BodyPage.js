@@ -1,7 +1,7 @@
 import React from "react";
-import { Container, Typography } from "@mui/material";
 import { useState } from "react";
-
+import { Link } from 'react-router-dom';
+import "../css/body.css";
 function Body() {
   const [text, setText] = useState("");
   const [keyPhrases, setKeyPhrases] = useState([]);
@@ -33,49 +33,23 @@ function Body() {
   };
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{
-        background: "#cfe8fc",
-        p: 2,
-        border: "1px solid #ccc",
-        borderRadius: "5px",
-        mt: 2,
-      }}
-    >
-      <Typography variant="h4" gutterBottom align="center">
-        Welcome to Evis
-      </Typography>
-
-      <Typography variant="body1" align="center">
-        This is the body of the app. You can put your content here.
-      </Typography>
-      <textarea
-        className="textarea-style"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Enter text to analyze"
-      />
-
-      <button onClick={handleSubmit}>Analyze Text</button>
-
-      <div>
-        <h2>Key Phrases</h2>
-
-        {keyPhrases.length > 0 ? (
-          <ul>
-            {keyPhrases.map((phrase, index) => (
-              <li key={index}>
-                <strong>Text:</strong> {phrase.Text} <strong>Score:</strong>{" "}
-                {phrase.Score.toFixed(3)}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No key phrases found.</p>
-        )}
+    <>
+    <div className="menu">
+      <div className="menuItem">
+        <Link to="/roomcreate" className="menuLink">Create Room Us</Link>
       </div>
-    </Container>
+      <div className="menuItem">
+        <Link to="/roomjoin" className="menuLink">Join a Room!</Link>
+      </div>
+      <div className="menuItem">
+        <Link to="/userprofile" className="menuLink">Get current User Profile </Link>
+      </div>
+      <div className="menuItem">
+        <Link to="/keyphrase" className="menuLink">Identify Key Phrases</Link>
+      </div>
+
+    </div>
+    </>
   );
 }
 

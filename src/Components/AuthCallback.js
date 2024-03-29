@@ -31,15 +31,14 @@ const AuthCallback = () => {
       if (!response.ok) throw new Error("Failed to exchange code for tokens");
 
       const data = await response.json();
-      console.log(data);
+
       sessionStorage.setItem("userName", data.userName);
       sessionStorage.setItem("userEmail", data.userEmail);
       sessionStorage.setItem("accessToken", data.accessToken);
       sessionStorage.setItem("idToken", data.idToken);
       sessionStorage.setItem("refreshToken", data.refreshToken);
 
-      // Handle or store your tokens here securely (e.g., sessionStorage, localStorage, state management)
-      // Redirect to dashboard or home
+     
       navigate("/");
     } catch (error) {
       console.error("Error exchanging code:", error);

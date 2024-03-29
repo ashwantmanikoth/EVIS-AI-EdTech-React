@@ -10,7 +10,6 @@ function UserProfile() {
       setLoading(true);
       try {
         const accessToken = sessionStorage.getItem('accessToken');
-        console.log(accessToken)
         if (accessToken===undefined) {
           throw new Error('No access token found');
         }
