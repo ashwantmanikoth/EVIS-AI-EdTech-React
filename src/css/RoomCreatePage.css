@@ -4,13 +4,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: 80vh;
   }
   
   .input-room-name {
     padding: 10px;
     margin: 10px 0;
-    width: 300px;
+    width: 500px;
     font-size: 16px;
     border: 2px solid #007bff;
     border-radius: 5px;
@@ -34,7 +34,7 @@
   }
   
   .room-id-display {
-    margin-top: 20px;
+    margin-top: 10px;
     padding: 10px;
     background-color: #f8f9fa;
     border: 1px solid #ddd;

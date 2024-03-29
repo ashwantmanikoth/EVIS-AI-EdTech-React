@@ -52,7 +52,54 @@ function Uploads() {
     }
   };
 
+  // import React, { useState } from 'react';
+  // import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+  // const [pdfDoc, setPdfDoc] = useState(null);
+  // const [pageNum, setPageNum] = useState(1);
+  // const [scale, setScale] = useState(1);
+  // const canvasRef = useRef();
+
+  // useEffect(() => {
+  //   if (pdfDoc) {
+  //     renderPage(pageNum, scale);
+  //   }
+  // }, [pdfDoc, pageNum, scale]);
+
+  // const renderPage = (num, scale) => {
+  //   pdfDoc.getPage(num).then((page) => {
+  //     const viewport = page.getViewport({ scale });
+  //     const canvas = canvasRef.current;
+  //     canvas.height = viewport.height;
+  //     canvas.width = viewport.width;
+
+  //     const renderContext = {
+  //       canvasContext: canvas.getContext("2d"),
+  //       viewport,
+  //     };
+
+  //     page.render(renderContext);
+  //   });
+  // };
+
+  // const onFileChange = (event) => {
+  //   const file = event.target.files[0];
+  //   if (file && file.type === "application/pdf") {
+  //     const fileReader = new FileReader();
+  //     fileReader.onload = function () {
+  //       const typedarray = new Uint8Array(this.result);
+  //       pdfjsLib.getDocument({ data: typedarray }).promise.then((pdfDoc_) => {
+  //         setPdfDoc(pdfDoc_);
+  //         setPageNum(1); // Reset to first page
+  //       });
+  //     };
+  //     fileReader.readAsArrayBuffer(file);
+  //   } else {
+  //     alert("Please select a PDF file.");
+  //   }
+  // };
+
   return (
+   
     <div>
       <h2>Upload Document</h2>
       <form onSubmit={handleFormSubmit}>
@@ -73,6 +120,28 @@ function Uploads() {
         <h2>No extration</h2>
       )}
     </div>
+
+    //new changes
+    // <div>
+    //   <input type="file" onChange={onFileChange} accept="application/pdf" />
+    //   <canvas ref={canvasRef}></canvas>
+    //   <div>
+    //     <button onClick={() => setPageNum(pageNum - 1)} disabled={pageNum <= 1}>
+    //       Prev
+    //     </button>
+    //     <button
+    //       onClick={() => setPageNum(pageNum + 1)}
+    //       disabled={pdfDoc ? pageNum >= pdfDoc.numPages : true}
+    //     >
+    //       Next
+    //     </button>
+    //     <button onClick={() => setScale(scale * 1.1)}>Zoom In</button>
+    //     <button onClick={() => setScale(scale / 1.1)}>Zoom Out</button>
+    //     <span>
+    //       Page {pageNum} of {pdfDoc ? pdfDoc.numPages : 1}
+    //     </span>
+    //   </div>
+    // </div>
   );
 }
 

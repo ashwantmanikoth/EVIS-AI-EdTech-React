@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../css/RoomCreatePage.css"; // Make sure to import the CSS file
-
+import Uploads from "../Components/Uploads";
 function RoomCreatePage() {
   const [roomName, setRoomName] = useState("");
   const [roomId, setRoomId] = useState("");

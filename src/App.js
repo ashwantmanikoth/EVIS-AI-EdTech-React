@@ -7,6 +7,7 @@ import Footer from "./Components/Footer";
 import Uploads from "./Components/Uploads";
 import Reports from "./Components/Reports";
 import AuthCallback from "./Components/AuthCallback";
+import AuthCallbackProfessor from "./Components/AuthCallbackProfessor";
 import RoomCreatePage from "./Pages/RoomCreatePage";
 import RoomJoinPage from "./Pages/RoomJoinPage";
 import UserProfile from "./Components/UserProfile";
@@ -25,6 +26,10 @@ function App() {
             <Route path="/roomcreate" element={<RoomCreatePage />} />
             <Route path="/roomjoin" element={<RoomJoinPage />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route
+              path="/auth/callback/professor"
+              element={<AuthCallbackProfessor />}
+            />
             <Route path="/reports" element={<Reports />} />
             <Route path="/uploads" element={<Uploads />} />
             <Route path="/signup" element={<Body />} />

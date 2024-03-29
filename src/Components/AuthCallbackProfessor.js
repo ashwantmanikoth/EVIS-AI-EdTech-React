@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const AuthCallback = () => {
+const AuthCallbackProfessor = () => {
   const navigate = useNavigate();
-  console.log("testtt");
+  console.log("3")
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("code");
-
+    console.log("soopi");
     if (code) {
       // Now, send this code to your Express backend to exchange it for tokens
       exchangeCodeForToken(code);
@@ -20,19 +20,21 @@ const AuthCallback = () => {
 
   const exchangeCodeForToken = async (code) => {
     try {
-      console.log("2");
-      const response = await fetch("http://localhost:3001/api/auth/exchange", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
-      });
+      const response = await fetch(
+        "http://localhost:3001/api/auth/professor/exchange",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code }),
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to exchange code for tokens");
 
       const data = await response.json();
 
       sessionStorage.setItem("userName", data.userName);
-      sessionStorage.setItem("userType", "Student");
+      sessionStorage.setItem("userType", "Professor");
       sessionStorage.setItem("userEmail", data.userEmail);
       sessionStorage.setItem("accessToken", data.accessToken);
       sessionStorage.setItem("idToken", data.idToken);
@@ -48,4 +50,4 @@ const AuthCallback = () => {
   return <div>Loading...</div>;
 };
 
-export default AuthCallback;
+export default AuthCallbackProfessor;

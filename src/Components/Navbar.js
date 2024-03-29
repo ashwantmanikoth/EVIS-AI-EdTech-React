@@ -36,34 +36,32 @@ function Navbar() {
   const handleCloseMenu = () => {
     setAnchorElMenu(null);
   };
-  const handleSignOut = async() => {
+  const handleSignOut = async () => {
     // Clear session storage and any sign-out logic
-    console.log("signouting")
+    console.log("signouting");
 
     try {
-      const accessToken = sessionStorage.getItem('accessToken');
-      console.log("signouting")
+      const accessToken = sessionStorage.getItem("accessToken");
+      console.log("signouting");
 
-      if (accessToken===undefined) {
-        throw new Error('No access token found');
+      if (accessToken === undefined) {
+        throw new Error("No access token found");
       }
-     
-      const response = await fetch('/api/auth/signout', {
-        method: 'POST',
+
+      const response = await fetch("/api/auth/signout", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ accessToken }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to sign out');
-      }else{
+        throw new Error("Failed to sign out");
+      } else {
         sessionStorage.clear();
       }
-    } catch (err) {
-      
-    } 
+    } catch (err) {}
     handleClose(); // Close the popover
   };
 
@@ -126,17 +124,24 @@ function Navbar() {
 
           <MenuItem onClick={handleCloseMenu}>
             <a
-              href="https://evis-auth.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=79jp9ca6spjm548a9o4pn2vs0f&response_type=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback"
+              href="https://evis-auth.auth.us-east-1.amazoncognito.com/login?client_id=79jp9ca6spjm548a9o4pn2vs0f&response_type=code&scope=aws.cognito.signin.user.admin+email+openid&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback"
+              // href="https://evis-auth.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=79jp9ca6spjm548a9o4pn2vs0f&response_type=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback"
               rel="noopener noreferrer"
               style={{ textDecoration: "none", color: "inherit" }}
             >
-              Sign Up
+              Sign Up Student
             </a>
           </MenuItem>
 
-          {/* <MenuItem component={Link} to="/keyphrase" onClick={handleCloseMenu}>
-            KeyPhrases
-          </MenuItem> */}
+          <MenuItem onClick={handleCloseMenu}>
+            <a
+            href="https://evis-professors.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=6uqmupeu00k6jm0ma0ci152uuc&response_type=code&scope=aws.cognito.signin.user.admin+email+openid+phone&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback%2Fprofessor"
+              rel="noopener noreferrer"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              Sign Up Professor
+            </a>
+          </MenuItem>
 
           <MenuItem component={Link} to="/aboutus" onClick={handleCloseMenu}>
             About Us

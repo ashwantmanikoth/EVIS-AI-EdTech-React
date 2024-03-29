@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import "../css/body.css";
 function Body() {
   const [text, setText] = useState("");
   const [keyPhrases, setKeyPhrases] = useState([]);
+  const [userType, setUserType] = useState("");
+  useEffect(() => {
+    setUserType(sessionStorage.getItem("userType"));
+  });
 
   const handleSubmit = async () => {
     try {
@@ -34,21 +38,32 @@ function Body() {
 
   return (
     <>
-    <div className="menu">
-      <div className="menuItem">
-        <Link to="/roomcreate" className="menuLink">Create Room Us</Link>
-      </div>
-      <div className="menuItem">
-        <Link to="/roomjoin" className="menuLink">Join a Room!</Link>
-      </div>
-      <div className="menuItem">
-        <Link to="/userprofile" className="menuLink">Get current User Profile </Link>
-      </div>
-      <div className="menuItem">
-        <Link to="/keyphrase" className="menuLink">Identify Key Phrases</Link>
-      </div>
+      <div className="menu">
+        {userType == "Profesor" ? (
+          <div className="menuItem">
+            <Link to="/roomcreate" className="menuLink">
+              Create Room!
+            </Link>
+          </div>
+        ) : (
+          <div className="menuItem">
+            <Link to="/roomjoin" className="menuLink">
+              Join a Room!
+            </Link>
+          </div>
+        )}
 
-    </div>
+        <div className="menuItem">
+          <Link to="/userprofile" className="menuLink">
+            Get current User Profile{" "}
+          </Link>
+        </div>
+        <div className="menuItem">
+          <Link to="/keyphrase" className="menuLink">
+            Identify Key Phrases
+          </Link>
+        </div>
+      </div>
     </>
   );
 }
