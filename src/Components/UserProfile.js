@@ -1,29 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 function UserProfile() {
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const userType = sessionStorage.getItem("userType");
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       setLoading(true);
       try {
-        const accessToken = sessionStorage.getItem('accessToken');
-        if (accessToken===undefined) {
-          throw new Error('No access token found');
+        const accessToken = sessionStorage.getItem("accessToken");
+
+        if (accessToken === undefined) {
+          throw new Error("No access token found");
         }
 
-        const response = await fetch('/api/auth/user-details', {
-          method: 'POST',
+        if (userType == "Professor") {
+          const response = await fetch("/api/auth/professor-details", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ accessToken }),
+          });
+        }
+
+        const response = await fetch("/api/auth/user-details", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ accessToken }),
         });
 
         if (!response.ok) {
-          throw new Error('Failed to fetch user details');
+          throw new Error("Failed to fetch user details");
         }
 
         const data = await response.json();
@@ -43,7 +55,7 @@ function UserProfile() {
 
   return (
     <div>
-      <h2>User Profile</h2>
+      <h2>{userType} Profile</h2>
       {userDetails && (
         <div>
           <p>Name: {userDetails.username}</p>

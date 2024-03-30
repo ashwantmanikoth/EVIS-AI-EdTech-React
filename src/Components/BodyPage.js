@@ -39,18 +39,24 @@ function Body() {
   return (
     <>
       <div className="menu">
-        {userType == "Profesor" ? (
-          <div className="menuItem">
-            <Link to="/roomcreate" className="menuLink">
-              Create Room!
-            </Link>
-          </div>
+        {userType ? (
+          <>
+            {userType == "Professor" ? (
+              <div className="menuItem">
+                <Link to="/roomcreate" className="menuLink">
+                  Create Room!
+                </Link>
+              </div>
+            ) : (
+              <div className="menuItem">
+                <Link to="/roomjoin" className="menuLink">
+                  Join a Room!
+                </Link>
+              </div>
+            )}
+          </>
         ) : (
-          <div className="menuItem">
-            <Link to="/roomjoin" className="menuLink">
-              Join a Room!
-            </Link>
-          </div>
+          <></>
         )}
 
         <div className="menuItem">
