@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import Room from "./Room";
 function RoomJoinPage() {
   const [roomId, setRoomId] = useState('');
   const [hasJoined, setHasJoined] = useState(false);
@@ -31,6 +31,7 @@ function RoomJoinPage() {
           throw new Error('Failed to join room');
         }
       } else {
+        sessionStorage.setItem("roomId",roomId)
         setHasJoined(true); // Move this inside else to ensure it's only set on successful join
       }
     } catch (error) {
@@ -45,6 +46,7 @@ function RoomJoinPage() {
       <div className="join-room-success">
         <h2>Successfully Joined Room!</h2>
         <p>Welcome to the room with ID: {roomId}</p>
+        <Room />
       </div>
     );
   }

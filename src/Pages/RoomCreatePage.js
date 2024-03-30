@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../css/RoomCreatePage.css"; // Make sure to import the CSS file
-import Uploads from "../Components/Uploads";
+import Room from "./Room";
 function RoomCreatePage() {
   const [roomName, setRoomName] = useState("");
   const [roomId, setRoomId] = useState("");
@@ -22,6 +22,7 @@ function RoomCreatePage() {
     
     if (response.status == 200) {
       setRoomId(data);
+      sessionStorage.setItem("roomId",data.roomId);
     } else {
       alert("Failed to create room. Please try again.");
     }
@@ -56,6 +57,7 @@ function RoomCreatePage() {
             <h2>Room ID: {roomId}</h2>
             <p>Share this ID with your students to join.</p>
           </div>
+          <Room />
         </>
       )}
     </div>
