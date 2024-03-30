@@ -19,8 +19,9 @@ function RoomCreatePage() {
     });
 
     const data = await response.json();
-    if (response.ok) {
-      setRoomId(data.roomId);
+    
+    if (response.status == 200) {
+      setRoomId(data);
     } else {
       alert("Failed to create room. Please try again.");
     }
