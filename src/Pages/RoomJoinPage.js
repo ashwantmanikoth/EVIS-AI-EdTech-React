@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Room from "./Room";
 function RoomJoinPage() {
   const [roomId, setRoomId] = useState('');
+  const [roomName, setRoomName] = useState('');
+
   const [hasJoined, setHasJoined] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
   const [errorMessage, setErrorMessage] = useState(''); // New state for managing error messages
@@ -22,17 +24,17 @@ function RoomJoinPage() {
         },
         body: JSON.stringify({ roomId }),
       });
+
   
-      if (!response.ok) {
-        if (response.status === 404) {
-          setErrorMessage('Room does not exists.');
-          setHasJoined(false);
-        } else {
-          throw new Error('Failed to join room');
-        }
-      } else {
+      if(response.status ==200){
+        const data = await response.json();
         sessionStorage.setItem("roomId",roomId)
+        setRoomName(data.roomName)
+        sessionStorage.setItem("roomName",data.roomName)
         setHasJoined(true); // Move this inside else to ensure it's only set on successful join
+      }else{
+        setErrorMessage('Room does not exists.');
+        setHasJoined(false);
       }
     } catch (error) {
       setErrorMessage(error.message); // Use the error message for display
@@ -45,7 +47,7 @@ function RoomJoinPage() {
     return (
       <div className="join-room-success">
         <h2>Successfully Joined Room!</h2>
-        <p>Welcome to the room with ID: {roomId}</p>
+        <p>Welcome to the room {roomName} with ID: {roomId}</p>
         <Room />
       </div>
     );
