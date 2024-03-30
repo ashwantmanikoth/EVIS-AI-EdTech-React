@@ -22,7 +22,7 @@ function RoomCreatePage() {
     
     if (response.status == 200) {
       setRoomId(data);
-      sessionStorage.setItem("roomId",data.roomId);
+      sessionStorage.setItem("roomId",data);
     } else {
       alert("Failed to create room. Please try again.");
     }
