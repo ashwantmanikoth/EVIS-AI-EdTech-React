@@ -43,24 +43,24 @@ function Navbar() {
     try {
       const accessToken = sessionStorage.getItem("accessToken");
       console.log("signouting");
+      sessionStorage.clear()
+      // if (accessToken === undefined) {
+      //   throw new Error("No access token found");
+      // }
 
-      if (accessToken === undefined) {
-        throw new Error("No access token found");
-      }
+      // const response = await fetch("/api/auth/signout", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({ accessToken }),
+      // });
 
-      const response = await fetch("/api/auth/signout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ accessToken }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to sign out");
-      } else {
-        sessionStorage.clear();
-      }
+      // if (!response.ok) {
+      //   throw new Error("Failed to sign out");
+      // } else {
+      //   sessionStorage.clear();
+      // }
     } catch (err) {}
     handleClose(); // Close the popover
   };
