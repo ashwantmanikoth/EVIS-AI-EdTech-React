@@ -15,7 +15,10 @@ function RoomCreatePage() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ roomName }),
+      body: JSON.stringify({
+        roomName: roomName,
+        userEmail: sessionStorage.getItem("userEmail"),
+      }),
     });
 
     const data = await response.json();
