@@ -10,10 +10,12 @@ const WebSocketComponent = () => {
 
   const [socket, setSocket] = useState(null);
   const [quizQuestions1, setQuizQuestions] = useState(null);
-  const [quizNumber, setQuizNumber] = useState(null);
+  const [quizNumber1, setQuizNumber] = useState(null);
   const [topic, setTopic] = useState("");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
+  const quizNumber = 1;
   const quizQuestions = [
     {
       "question": "What is the capital of France?",
@@ -134,37 +136,40 @@ const WebSocketComponent = () => {
     const allQuestionsAnswered = selectedAnswers.every(answer => answer !== null);
     if (!allQuestionsAnswered) {
       setShowErrorMessage(true);
+      setErrorMessage("Please answer all questions before submitting.");
       return;
     }
 
     setShowErrorMessage(false);
+    setErrorMessage("");
 
     const submitAnswerRequest = {
       roomId,
       userId,
       quizNumber,
+      topic,
       selectedAnswers
     }
     console.log(submitAnswerRequest);
 
-    // const response = await fetch("/quiz/submitAnswer", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({ roomName }),
-    // });
+    const response = await fetch("/quiz/submitAnswer", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(submitAnswerRequest),
+    });
 
-    // const data = await response.json();
+    const submitAnswerResponse = await response.json();
+    console.log("submitAnswerResponse: ", submitAnswerResponse);
     
-    // if (response.status == 200) {
-    //   setRoomId(data);
-    //   sessionStorage.setItem("roomId",data);
-    // } else {
-    //   alert("Failed to create room. Please try again.");
-    // }
-    // setIsSubmitting(false);
-    // Perform any further actions here, such as sending the selected answers to a server
+    if (response.status == 200) {
+      setQuizQuestions(null);
+      setShowErrorMessage(false);
+    } else {
+      setShowErrorMessage(true);
+      setErrorMessage(submitAnswerResponse.message);
+    }
   };
 
   const navigate = useNavigate();
@@ -174,9 +179,8 @@ const WebSocketComponent = () => {
   return (
     <div className="container" style={{ display: 'flex', flexDirection: 'column' }}>
 
-      
-        <h2>Successfully Joined Room!</h2>
-        <p>Welcome to the room with ID: {roomId}</p>
+        <p>Welcome to the room! Room ID: <b>{roomId}</b></p>
+        <p>Stay tuned for interactive content.</p>
 
       {quizQuestions && quizQuestions.length > 0 && (
         <div>
@@ -186,7 +190,7 @@ const WebSocketComponent = () => {
             onSelectAnswer={handleSelectAnswer}
           />
           {showErrorMessage && (
-            <p style={{ color: 'red' }}>Please answer all questions before submitting.</p>
+            <p style={{ color: 'red' }}>{errorMessage}</p>
           )}
           <button onClick={handleSubmit}>Submit</button>
         </div>
