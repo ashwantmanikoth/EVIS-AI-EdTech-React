@@ -4,12 +4,14 @@ import QuizComponent from '../Components/QuizComponent';
 import "../css/Room.css"; // Make sure to import the CSS file
 
 const WebSocketComponent = () => {
-  const room_id = sessionStorage.getItem("roomId");
-  const user_id = sessionStorage.getItem("userEmail");
-  const user_type = sessionStorage.getItem("userType");
+  const roomId = sessionStorage.getItem("roomId");
+  const userId = sessionStorage.getItem("userEmail");
+  const userType = sessionStorage.getItem("userType");
 
   const [socket, setSocket] = useState(null);
   const [quizQuestions1, setQuizQuestions] = useState(null);
+  const [quizNumber, setQuizNumber] = useState(null);
+  const [topic, setTopic] = useState("");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   const quizQuestions = [
@@ -59,7 +61,7 @@ const WebSocketComponent = () => {
     console.log("Inside use effect for web socket connection")
     // Create a new WebSocket connection with gameId, teamName, and userId as query parameters
     const ws_url = "wss://k1p17reb10.execute-api.us-east-1.amazonaws.com/dev"
-    const ws_url_with_query_params = ws_url + `?roomId=${room_id}&userId=${user_id}&userType=${user_type}`;
+    const ws_url_with_query_params = ws_url + `?roomId=${roomId}&userId=${userId}&userType=${userType}`;
     const ws = new WebSocket(ws_url_with_query_params);
 
     // Event listener for when the connection is established
@@ -75,6 +77,8 @@ const WebSocketComponent = () => {
 
       if (message.quiz_questions) {
         setQuizQuestions(message.quiz_questions);
+        setQuizNumber(message.quiz_number);
+        setTopic(message.topic);
       }
     };
 
@@ -104,7 +108,7 @@ const WebSocketComponent = () => {
     if (socket) {
       const closeMessage = JSON.stringify({
         action: 'close',
-        roomId: room_id,
+        roomId: roomId,
       });
       socket.close(1000, closeMessage);
     }
@@ -124,7 +128,7 @@ const WebSocketComponent = () => {
   };
 
   // Handler function to handle form submission
-  const handleSubmit = () => {
+  const handleSubmit = async (event) => {
     console.log('Submitted Answers:', selectedAnswers);
     // Check if all questions are answered
     const allQuestionsAnswered = selectedAnswers.every(answer => answer !== null);
@@ -133,6 +137,33 @@ const WebSocketComponent = () => {
       return;
     }
 
+    setShowErrorMessage(false);
+
+    const submitAnswerRequest = {
+      roomId,
+      userId,
+      quizNumber,
+      selectedAnswers
+    }
+    console.log(submitAnswerRequest);
+
+    // const response = await fetch("/quiz/submitAnswer", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ roomName }),
+    // });
+
+    // const data = await response.json();
+    
+    // if (response.status == 200) {
+    //   setRoomId(data);
+    //   sessionStorage.setItem("roomId",data);
+    // } else {
+    //   alert("Failed to create room. Please try again.");
+    // }
+    // setIsSubmitting(false);
     // Perform any further actions here, such as sending the selected answers to a server
   };
 
@@ -143,8 +174,9 @@ const WebSocketComponent = () => {
   return (
     <div className="container" style={{ display: 'flex', flexDirection: 'column' }}>
 
-      <h2>Room Details</h2>
-      <p>Room ID: {room_id}</p>
+      
+        <h2>Successfully Joined Room!</h2>
+        <p>Welcome to the room with ID: {roomId}</p>
 
       {quizQuestions && quizQuestions.length > 0 && (
         <div>

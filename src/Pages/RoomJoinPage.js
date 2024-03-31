@@ -46,8 +46,6 @@ function RoomJoinPage() {
   if (hasJoined) {
     return (
       <div className="join-room-success">
-        <h2>Successfully Joined Room!</h2>
-        <p>Welcome to the room {roomName} with ID: {roomId}</p>
         <Room />
       </div>
     );
