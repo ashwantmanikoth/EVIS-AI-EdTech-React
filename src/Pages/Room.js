@@ -9,7 +9,7 @@ const WebSocketComponent = () => {
   const userType = sessionStorage.getItem("userType");
 
   const [socket, setSocket] = useState(null);
-  const [quizQuestions1, setQuizQuestions] = useState(null);
+  const [quizQuestions1, setQuizQuestions] = useState([]);
   const [quizNumber1, setQuizNumber] = useState(null);
   const [topic, setTopic] = useState("");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
@@ -17,46 +17,46 @@ const WebSocketComponent = () => {
 
   const quizNumber = 1;
   const quizQuestions = [
-    {
+  {
       "question": "What is the capital of France?",
-      "options": [
-        "Paris",
-        "London",
-        "Berlin",
-        "Madrid"
-      ],
-      "correct_option": 0
-    },
-    {
+  "options": [
+  "Paris",
+  "London",
+  "Berlin",
+  "Madrid"
+  ],
+  "correct_option": 0
+  },
+  {
       "question": "Who painted the Mona Lisa?",
-      "options": [
-        "Leonardo da Vinci",
-        "Pablo Picasso",
-        "Vincent van Gogh",
-        "Michelangelo"
-      ],
-      "correct_option": 1
-    },
-    {
+  "options": [
+  "Leonardo da Vinci",
+  "Pablo Picasso",
+  "Vincent van Gogh",
+  "Michelangelo"
+  ],
+  "correct_option": 1
+  },
+  {
       "question": "What is the largest planet in our solar system?",
-      "options": [
-        "Jupiter",
-        "Saturn",
-        "Mars",
-        "Earth"
-      ],
-      "correct_option": 2
-    },
-    {
+  "options": [
+  "Jupiter",
+  "Saturn",
+  "Mars",
+  "Earth"
+  ],
+  "correct_option": 2
+  },
+  {
       "question": "What is the chemical symbol for gold?",
-      "options": [
-        "Au",
-        "Ag",
-        "Fe",
-        "Cu"
-      ],
-      "correct_option": 3
-    }
+  "options": [
+  "Au",
+  "Ag",
+  "Fe",
+  "Cu"
+  ],
+  "correct_option": 3
+  }
   ];
 
   useEffect(() => {
@@ -134,7 +134,7 @@ const WebSocketComponent = () => {
     console.log('Submitted Answers:', selectedAnswers);
     // Check if all questions are answered
     const allQuestionsAnswered = selectedAnswers.every(answer => answer !== null);
-    if (!allQuestionsAnswered) {
+    if (selectedAnswers.length == 0 || !allQuestionsAnswered) {
       setShowErrorMessage(true);
       setErrorMessage("Please answer all questions before submitting.");
       return;
@@ -164,7 +164,7 @@ const WebSocketComponent = () => {
     console.log("submitAnswerResponse: ", submitAnswerResponse);
     
     if (response.status == 200) {
-      setQuizQuestions(null);
+      setQuizQuestions([]);
       setShowErrorMessage(false);
     } else {
       setShowErrorMessage(true);
