@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import "../css/RoomCreatePage.css"; // Make sure to import the CSS file
-import Room from "./Room";
+import "../css/RoomCreatePage.css"; // Ensure this CSS file contains the updated styles
+import ProfessorRoom from "./ProfessorRoom";
+import PdfViewer from "./PdfViewer";
+import { Padding } from "@mui/icons-material";
+
 function RoomCreatePage() {
   const [roomName, setRoomName] = useState("");
   const [roomId, setRoomId] = useState("");
@@ -9,7 +12,9 @@ function RoomCreatePage() {
   const handleRoomNameChange = (event) => {
     setRoomName(event.target.value);
   };
-  const createRoom = async (event) => {
+
+  const createRoom = async () => {
+    setIsSubmitting(true);
     const response = await fetch("/room/create", {
       method: "POST",
       headers: {
@@ -21,11 +26,10 @@ function RoomCreatePage() {
       }),
     });
 
-    const data = await response.json();
-    
-    if (response.status == 200) {
+    if (response.ok) {
+      const data = await response.json();
       setRoomId(data);
-      sessionStorage.setItem("roomId",data);
+      sessionStorage.setItem("roomId", data);
     } else {
       alert("Failed to create room. Please try again.");
     }
@@ -33,9 +37,9 @@ function RoomCreatePage() {
   };
 
   return (
-    <div className="page-container">
-      {!roomId ? ( // Conditional rendering based on roomId
-        <>
+    <div>
+      {!roomId ? (
+        <div className="container">
           <h1>Create Room</h1>
           <input
             className="input-room-name"
@@ -52,16 +56,27 @@ function RoomCreatePage() {
           >
             {isSubmitting ? "Creating..." : "Create Room"}
           </button>
-        </>
+        </div>
       ) : (
         <>
-          <h1>Room Created</h1>
-          <div className="room-id-display">
-            <h2>Room ID: {roomId}</h2>
-            <p>Share this ID with your students to join.</p>
-          </div>
-          <Room />
+          <ProfessorRoom roomName={roomName} roomId={roomId} />
         </>
+
+        // <>
+        //   {/* <h1>Room Created</h1> */}
+        //   <div className="page-container">
+        //     <div className="room-id-display">
+        //       <div className="horizontal-container">
+        //         <h2>Room ID: {roomId}</h2>
+        //         <p>Share this ID with your students to join.</p>
+        //         {/* <ProfessorRoom /> Uncomment or remove as needed */}
+        //       </div>
+        //     </div>
+        //     <div className="horizontal-container">
+        //       <PdfViewer />
+        //     </div>
+        //   </div>
+        // </>
       )}
     </div>
   );
