@@ -51,4 +51,13 @@
     border: 11px solid #ddd;
     border-radius: 28px;
   }
+
+  .room-id-display1 {
+    margin: 10px 800px 10px 100px;
+    padding-right: 50px;
+    padding-left: 50px;
+    background-color: #f8f9fa;
+    border: 11px solid #ddd;
+    border-radius: 28px;
+  }
   

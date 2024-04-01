@@ -5,7 +5,6 @@ import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import axios from "axios";
 
-
 // Setting up the worker path
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -29,11 +28,6 @@ const PdfViewer = () => {
       setFile(selectedFile);
     }
   };
-
-
-
-
-
 
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
@@ -76,9 +70,9 @@ const PdfViewer = () => {
   return (
     <div>
       {file && (
-        <div>
+        <div className="room-id-display1 ">
           <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-            <Page pageNumber={pageNumber} width={500} />{" "}
+            <Page pageNumber={pageNumber} width={300} />
             {/* Adjust width as needed */}
           </Document>
           <div>
@@ -102,36 +96,37 @@ const PdfViewer = () => {
           </p>
         </div>
       )}
-      <input
-        type="file"
-        style={{ display: "none" }} // Hide the file input
-        ref={fileInputRef}
-        onChange={onFileChange}
-        accept="application/pdf"
-      />
-      <button className="btn-create-room" onClick={handleButtonClick}>
-        Upload PDF
-      </button>
-      <button className="btn-" onClick={handleFormSubmit}>
-        Send Insights to Students
-      </button>
+      <div className="room-id-display1">
+        <input
+          type="file"
+          style={{ display: "none" }} // Hide the file input
+          ref={fileInputRef}
+          onChange={onFileChange}
+          accept="application/pdf"
+        />
+        <button className="btn-create-room" onClick={handleButtonClick}>
+          Upload PDF
+        </button>
+        <button className="btn-create-room" onClick={handleFormSubmit}>
+          Send Insights to Students
+        </button>
 
-
-      {blocks.length > 0 ? (
-        <div className="horizontal-container">
-          <ul>
-            {blocks.map((block, index) => (
-              <div className="">
-                <li key={index}>{`Page ${block.page}: ${block.text}`}</li>
-              </div>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <div className="horizontal-container">
-          <h1>Waiting for Insights</h1>
-        </div>
-      )}
+        {blocks.length > 0 ? (
+          <div className="room-id-display1">
+            <ul>
+              {blocks.map((block, index) => (
+                <div className="">
+                  <li key={index}>{`Page ${block.page}: ${block.text}`}</li>
+                </div>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <div className="orizontal-container">
+            <h1>Waiting for Insights.....</h1>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
