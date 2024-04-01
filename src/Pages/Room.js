@@ -115,9 +115,38 @@ const WebSocketComponent = () => {
       socket.close(1000, closeMessage);
     }
 
+    // populateQuizPerformanceInsights();
+
     // Redirect to the home page or any other page as needed
     navigate('/');
   };
+
+  const populateQuizPerformanceInsights = async () => {
+    const quizDetails = {
+      roomId,
+      quizNumber,
+      topic
+    }
+    console.log(quizDetails);
+
+    const response = await fetch("/quiz/savePerformanceInsights", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(quizDetails),
+    });
+
+    const performanceInsightsResponse = await response.json();
+    console.log("performanceInsightsResponse: ", performanceInsightsResponse);
+    
+    // if (response.status == 200) {
+    //   setShowErrorMessage(false);
+    // } else {
+    //   setShowErrorMessage(true);
+    //   setErrorMessage(performanceInsightsResponse.message);
+    // }
+  }
 
   // State to store selected answers for each question
   const [selectedAnswers, setSelectedAnswers] = useState(Array(quizQuestions.length).fill(null));
