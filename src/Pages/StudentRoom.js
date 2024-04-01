@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QuizComponent from '../Components/QuizComponent';
-import "../css/Room.css"; // Make sure to import the CSS file
+import "../css/Room.css";
 
 const WebSocketComponent = () => {
   const roomId = sessionStorage.getItem("roomId");
@@ -9,55 +9,55 @@ const WebSocketComponent = () => {
   const userType = sessionStorage.getItem("userType");
 
   const [socket, setSocket] = useState(null);
-  const [quizQuestions1, setQuizQuestions] = useState([]);
-  const [quizNumber1, setQuizNumber] = useState(null);
+  const [quizQuestions, setQuizQuestions] = useState([]);
+  const [quizNumber, setQuizNumber] = useState(null);
   const [topic, setTopic] = useState("");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const quizNumber = 1;
-  const quizQuestions = [
-  {
-      "question": "What is the capital of France?",
-  "options": [
-  "Paris",
-  "London",
-  "Berlin",
-  "Madrid"
-  ],
-  "correct_option": 0
-  },
-  {
-      "question": "Who painted the Mona Lisa?",
-  "options": [
-  "Leonardo da Vinci",
-  "Pablo Picasso",
-  "Vincent van Gogh",
-  "Michelangelo"
-  ],
-  "correct_option": 1
-  },
-  {
-      "question": "What is the largest planet in our solar system?",
-  "options": [
-  "Jupiter",
-  "Saturn",
-  "Mars",
-  "Earth"
-  ],
-  "correct_option": 2
-  },
-  {
-      "question": "What is the chemical symbol for gold?",
-  "options": [
-  "Au",
-  "Ag",
-  "Fe",
-  "Cu"
-  ],
-  "correct_option": 3
-  }
-  ];
+  // const quizNumber = 1;
+  // const quizQuestions = [
+  // {
+  //     "question": "What is the capital of France?",
+  // "options": [
+  // "Paris",
+  // "London",
+  // "Berlin",
+  // "Madrid"
+  // ],
+  // "correct_option": 0
+  // },
+  // {
+  //     "question": "Who painted the Mona Lisa?",
+  // "options": [
+  // "Leonardo da Vinci",
+  // "Pablo Picasso",
+  // "Vincent van Gogh",
+  // "Michelangelo"
+  // ],
+  // "correct_option": 1
+  // },
+  // {
+  //     "question": "What is the largest planet in our solar system?",
+  // "options": [
+  // "Jupiter",
+  // "Saturn",
+  // "Mars",
+  // "Earth"
+  // ],
+  // "correct_option": 2
+  // },
+  // {
+  //     "question": "What is the chemical symbol for gold?",
+  // "options": [
+  // "Au",
+  // "Ag",
+  // "Fe",
+  // "Cu"
+  // ],
+  // "correct_option": 3
+  // }
+  // ];
 
   useEffect(() => {
     console.log("Inside use effect for web socket connection")
@@ -77,10 +77,17 @@ const WebSocketComponent = () => {
       const message = JSON.parse(event.data);
       console.log('Received message:', message);
 
-      if (message.quiz_questions) {
-        setQuizQuestions(message.quiz_questions);
-        setQuizNumber(message.quiz_number);
+      if (message.quizQuestions) {
+        setQuizQuestions(message.quizQuestions);
+        setQuizNumber(message.quizNumber);
         setTopic(message.topic);
+      }
+      if (message.action) {
+        if (message.action == "endQuiz") {
+          setQuizQuestions([]);
+          setQuizNumber(-1);
+          setTopic("");
+        }
       }
     };
 
@@ -115,38 +122,9 @@ const WebSocketComponent = () => {
       socket.close(1000, closeMessage);
     }
 
-    // populateQuizPerformanceInsights();
-
     // Redirect to the home page or any other page as needed
     navigate('/');
   };
-
-  const populateQuizPerformanceInsights = async () => {
-    const quizDetails = {
-      roomId,
-      quizNumber,
-      topic
-    }
-    console.log(quizDetails);
-
-    const response = await fetch("/quiz/savePerformanceInsights", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(quizDetails),
-    });
-
-    const performanceInsightsResponse = await response.json();
-    console.log("performanceInsightsResponse: ", performanceInsightsResponse);
-    
-    // if (response.status == 200) {
-    //   setShowErrorMessage(false);
-    // } else {
-    //   setShowErrorMessage(true);
-    //   setErrorMessage(performanceInsightsResponse.message);
-    // }
-  }
 
   // State to store selected answers for each question
   const [selectedAnswers, setSelectedAnswers] = useState(Array(quizQuestions.length).fill(null));

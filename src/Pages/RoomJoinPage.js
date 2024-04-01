@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Room from "./Room";
+import StudentRoom from "./StudentRoom";
 function RoomJoinPage() {
   const [roomId, setRoomId] = useState('');
   const [roomName, setRoomName] = useState('');
@@ -46,7 +46,7 @@ function RoomJoinPage() {
   if (hasJoined) {
     return (
       <div className="join-room-success">
-        <Room />
+        <StudentRoom />
       </div>
     );
   }
