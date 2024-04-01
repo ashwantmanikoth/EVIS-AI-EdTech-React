@@ -96,7 +96,7 @@ const PdfViewer = () => {
           </p>
         </div>
       )}
-      <div className="room-id-display1">
+      <div className="room-id-display">
         <input
           type="file"
           style={{ display: "none" }} // Hide the file input

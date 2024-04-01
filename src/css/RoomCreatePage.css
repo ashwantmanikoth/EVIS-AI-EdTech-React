@@ -44,7 +44,7 @@
   }
   
   .room-id-display {
-    margin: 10px 30px 500px 100px;
+    margin-right: 40%;
     padding-right: 50px;
     padding-left: 50px;
     background-color: #f8f9fa;
@@ -53,9 +53,11 @@
   }
 
   .room-id-display1 {
-    margin: 10px 800px 10px 100px;
-    padding-right: 50px;
-    padding-left: 50px;
+    margin-right: auto;
+    margin-left: auto;
+
+    padding-right: 200px;
+    padding-left: 40px;
     background-color: #f8f9fa;
     border: 11px solid #ddd;
     border-radius: 28px;
