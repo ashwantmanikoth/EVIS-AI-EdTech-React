@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -9,8 +9,10 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Link, useAsyncValue } from "react-router-dom";
 import { Avatar, Popover } from "@mui/material";
+import { Context } from "../App";
 
 function Navbar() {
+  const [isSignedIn, setIsSignedIn] = useContext(Context);
   const [username, setUsername] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElMenu, setAnchorElMenu] = useState(null);
@@ -20,15 +22,13 @@ function Navbar() {
 
   const id = open ? "simple-popover" : undefined;
   const cognito_url = process.env.REACT_APP_COGNIO_HOSTED_UI_SIGNIN_LINK;
-
   useEffect(() => {
-    // Retrieve the username from session storage
     const storedUsername = sessionStorage.getItem("userName");
     if (storedUsername) {
       setUsername(storedUsername);
       console.log("sett");
     }
-  }, []);
+  });
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -38,29 +38,28 @@ function Navbar() {
   };
   const handleSignOut = async () => {
     // Clear session storage and any sign-out logic
-    console.log("signouting");
 
     try {
       const accessToken = sessionStorage.getItem("accessToken");
-      console.log("signouting");
-      sessionStorage.clear()
-      // if (accessToken === undefined) {
-      //   throw new Error("No access token found");
-      // }
 
-      // const response = await fetch("/api/auth/signout", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({ accessToken }),
-      // });
+      if (accessToken === undefined) {
+        throw new Error("No access token found");
+      }
 
-      // if (!response.ok) {
-      //   throw new Error("Failed to sign out");
-      // } else {
-      //   sessionStorage.clear();
-      // }
+      const response = await fetch("/api/auth/signout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ accessToken }),
+      });
+
+      if (response.status == 200) {
+        sessionStorage.clear();
+        setIsSignedIn(false);
+        // useEffect();
+        console.log(isSignedIn);
+      }
     } catch (err) {}
     handleClose(); // Close the popover
   };
@@ -135,7 +134,7 @@ function Navbar() {
 
           <MenuItem onClick={handleCloseMenu}>
             <a
-              href="https://evis-professors.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=7nsa0cqntm824rhqvo389r73eu&response_type=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback%2Fprofessor"
+              href="https://evis-professors.auth.us-east-1.amazoncognito.com/login?client_id=7nsa0cqntm824rhqvo389r73eu&response_type=code&scope=aws.cognito.signin.user.admin+email+openid+phone&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback%2Fprofessor"
               rel="noopener noreferrer"
               style={{ textDecoration: "none", color: "inherit" }}
             >
@@ -154,11 +153,15 @@ function Navbar() {
         </Typography>
 
         <div>
-          {username && (
+          {isSignedIn ? (
             <Avatar
-              sx={{ bgcolor: "secondary.main", cursor: "pointer" }}
+              sx={{ bgcolor: "#AFE1AF", cursor: "pointer" }}
               onClick={handleClick}
-            ></Avatar>
+            >
+              {username.charAt(0).toUpperCase()}
+            </Avatar>
+          ) : (
+            ""
           )}
           <Popover
             id={id}

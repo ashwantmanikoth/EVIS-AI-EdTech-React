@@ -1,14 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/body.css";
+import { Context } from "../App";
 function Body() {
+  const [isSignedIn, setIsSignedIn] = useContext(Context);
   const [text, setText] = useState("");
   const [keyPhrases, setKeyPhrases] = useState([]);
-  const [userType, setUserType] = useState("");
+  const [userType, setUserType] = useState(null);
+
   useEffect(() => {
-    setUserType(sessionStorage.getItem("userType"));
-  });
+    const storedUserType =sessionStorage.getItem("userType");
+    if (storedUserType != null) {
+      setUserType(storedUserType);
+      setIsSignedIn(true);
+    }
+  } );
 
   const handleSubmit = async () => {
     try {

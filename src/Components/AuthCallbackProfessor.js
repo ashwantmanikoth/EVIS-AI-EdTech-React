@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AuthCallbackProfessor = () => {
   const navigate = useNavigate();
-  console.log("3")
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -16,7 +15,7 @@ const AuthCallbackProfessor = () => {
       // Handle error or redirect
       navigate("/");
     }
-  }, [navigate]);
+  });
 
   const exchangeCodeForToken = async (code) => {
     try {
@@ -39,7 +38,6 @@ const AuthCallbackProfessor = () => {
       sessionStorage.setItem("accessToken", data.accessToken);
       sessionStorage.setItem("idToken", data.idToken);
       sessionStorage.setItem("refreshToken", data.refreshToken);
-
       navigate("/");
     } catch (error) {
       console.error("Error exchanging code:", error);
