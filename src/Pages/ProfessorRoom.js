@@ -3,17 +3,13 @@ import PdfViewer from "./PdfViewer";
 import { useNavigate } from "react-router-dom";
 
 const ProfessorRoom = (props) => {
-  const [file, setFile] = useState(null);
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1); // Added state for current page
-  const [blocks, setBlocks] = useState([]);
   const [parentValue, setParentValue] = useState([]);
 
   const roomId = sessionStorage.getItem("roomId");
   const userId = sessionStorage.getItem("userEmail");
   const userType = sessionStorage.getItem("userType");
 
-  const [quizNumber, setQuizNumber] = useState(1);
+  const [quizNumber, setQuizNumber] = useState(-1);
   const [topic, setTopic] = useState("AWS");
 
   const [socket, setSocket] = useState(null);
@@ -75,15 +71,26 @@ const ProfessorRoom = (props) => {
         action: "close",
         roomId: roomId,
       });
+      sessionStorage.removeItem("roomId");
       socket.close(1000, closeMessage);
     }
-
     // Redirect to the home page or any other page as needed
     navigate("/");
   };
 
-  const handleDeleteRoom = () => {
-    handleExitRoom();
+  const handleDeleteRoom = async () => {
+    const response = await fetch("/room/delete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        roomId: roomId,
+      }),
+    });
+    if (response.ok) {
+      handleExitRoom();
+    }
   };
 
   const handleStartQuiz = async () => {
@@ -186,7 +193,7 @@ const ProfessorRoom = (props) => {
           )}
         </div>
         <div className="room-id-display">
-          <div className="horizontal-container">
+          <div className="ho.rizontal-container">
             <PdfViewer />
           </div>
         </div>

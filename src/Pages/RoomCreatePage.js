@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../css/RoomCreatePage.css"; // Ensure this CSS file contains the updated styles
 import ProfessorRoom from "./ProfessorRoom";
-import PdfViewer from "./PdfViewer";
-import { Padding } from "@mui/icons-material";
 
 function RoomCreatePage() {
   const [roomName, setRoomName] = useState("");
@@ -12,6 +10,13 @@ function RoomCreatePage() {
   const handleRoomNameChange = (event) => {
     setRoomName(event.target.value);
   };
+  useEffect(() => {
+    // checks if there are any active rooms in localstorage //todo neec to check in backend/cache
+    const storedRoomId = sessionStorage.getItem("roomId");
+    if (storedRoomId) {
+      setRoomId(storedRoomId);
+    }
+  }, []);
 
   const createRoom = async () => {
     setIsSubmitting(true);
@@ -61,22 +66,6 @@ function RoomCreatePage() {
         <>
           <ProfessorRoom roomName={roomName} roomId={roomId} />
         </>
-
-        // <>
-        //   {/* <h1>Room Created</h1> */}
-        //   <div className="page-container">
-        //     <div className="room-id-display">
-        //       <div className="horizontal-container">
-        //         <h2>Room ID: {roomId}</h2>
-        //         <p>Share this ID with your students to join.</p>
-        //         {/* <ProfessorRoom /> Uncomment or remove as needed */}
-        //       </div>
-        //     </div>
-        //     <div className="horizontal-container">
-        //       <PdfViewer />
-        //     </div>
-        //   </div>
-        // </>
       )}
     </div>
   );
