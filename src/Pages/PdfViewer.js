@@ -12,6 +12,7 @@ const PdfViewer = () => {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1); // Added state for current page
   const [blocks, setBlocks] = useState([]);
+  const [isLoading, setisLoading] = useState(false);
 
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
@@ -44,7 +45,7 @@ const PdfViewer = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault(); // Prevent the form from submitting in the traditional way
-
+    setisLoading(true);
     if (!file) {
       alert("Please select a file to upload");
       return;
@@ -61,7 +62,10 @@ const PdfViewer = () => {
       });
       console.log("File uploaded successfully", response.data);
       alert("File uploaded successfully");
-      getExtracts();
+      if(await getExtracts()){
+        setisLoading(false);
+      }
+      
     } catch (error) {
       console.error("Error uploading file", error);
       alert("Error uploading file");
@@ -69,7 +73,6 @@ const PdfViewer = () => {
   };
 
   const getExtracts = async () => {
-    console.log("Asdfdsaf");
     try {
       const response = await fetch("/extract", { method: "GET" });
 
@@ -84,8 +87,9 @@ const PdfViewer = () => {
       console.error("Error:", error);
     }
   };
-  const blocksForCurrentPage = blocks.filter(block => block.page === pageNumber);
-
+  const blocksForCurrentPage = blocks.filter(
+    (block) => block.page === pageNumber
+  );
 
   return (
     <div>
@@ -138,7 +142,6 @@ const PdfViewer = () => {
         {blocks.length > 0 ? (
           <div className="room-id-display1">
             <ul>
-
               {blocksForCurrentPage.map((block, index) => (
                 <div className="">
                   <li key={index}>{`Page ${block.page}: ${block.text}`}</li>
@@ -147,9 +150,7 @@ const PdfViewer = () => {
             </ul>
           </div>
         ) : (
-          <div className="">
-            <h1>Waiting for Insights.....</h1>
-          </div>
+          <div className="">{isLoading==true ?(<div className="spinner"></div>):""}</div>
         )}
       </div>
     </div>
