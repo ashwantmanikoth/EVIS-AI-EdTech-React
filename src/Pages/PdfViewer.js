@@ -61,18 +61,42 @@ const PdfViewer = () => {
       });
       console.log("File uploaded successfully", response.data);
       alert("File uploaded successfully");
+      getExtracts();
     } catch (error) {
       console.error("Error uploading file", error);
       alert("Error uploading file");
     }
   };
 
+  const getExtracts = async () => {
+    console.log("Asdfdsaf");
+    try {
+      const response = await fetch("/extract", { method: "GET" });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      } else {
+        const data = await response.json();
+        setBlocks(data);
+        console.log(data);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  const blocksForCurrentPage = blocks.filter(block => block.page === pageNumber);
+
+
   return (
     <div>
       {file && (
-        <div className="room-id-display1 ">
+        <div>
           <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-            <Page pageNumber={pageNumber} width={300} />
+            <Page
+              pageNumber={pageNumber}
+              width={300}
+              style={{ border: "10px solid black" }}
+            />
             {/* Adjust width as needed */}
           </Document>
           <div>
@@ -96,7 +120,7 @@ const PdfViewer = () => {
           </p>
         </div>
       )}
-      <div className="room-id-display">
+      <div>
         <input
           type="file"
           style={{ display: "none" }} // Hide the file input
@@ -114,7 +138,8 @@ const PdfViewer = () => {
         {blocks.length > 0 ? (
           <div className="room-id-display1">
             <ul>
-              {blocks.map((block, index) => (
+
+              {blocksForCurrentPage.map((block, index) => (
                 <div className="">
                   <li key={index}>{`Page ${block.page}: ${block.text}`}</li>
                 </div>
@@ -122,7 +147,7 @@ const PdfViewer = () => {
             </ul>
           </div>
         ) : (
-          <div className="orizontal-container">
+          <div className="">
             <h1>Waiting for Insights.....</h1>
           </div>
         )}
