@@ -88,7 +88,8 @@ const ProfessorRoom = (props) => {
         roomId: roomId,
       }),
     });
-    if (response.ok) {
+
+    if (response.status == 200) {
       handleExitRoom();
     }
   };
