@@ -9,14 +9,15 @@ function KeyPhrases() {
   const handleSubmit = async () => {
     try {
       console.log(text);
-      const response = await fetch("http://localhost:3001/analyze-text", {
+      const response = await fetch("/analyzeText/keyphrase", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ text }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        text: text,
+      }),
       });
-
       const data = await response.json();
 
       if (!response.ok) {

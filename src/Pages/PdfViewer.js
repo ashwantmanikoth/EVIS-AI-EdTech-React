@@ -1,6 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
-// Import styles for text layer and annotation layer
+import { useNavigate } from "react-router-dom";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import axios from "axios";
@@ -9,13 +9,22 @@ import axios from "axios";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const PdfViewer = () => {
+  const navigate = useNavigate();
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1); // Added state for current page
   const [blocks, setBlocks] = useState([]);
   const [isLoading, setisLoading] = useState(false);
 
   const [file, setFile] = useState(null);
+  const [quizCompleted,setQuizCompleted] =useState(false);
   const fileInputRef = useRef(null);
+  const [quizNumber, setQuizNumber] = useState(-1);
+  const [topic, setTopic] = useState("AWS");
+  const userId = sessionStorage.getItem("userEmail");
+  const userType = sessionStorage.getItem("userType");
+  const roomId = sessionStorage.getItem("roomId");
+
+  const [socket, setSocket] = useState(null);
 
   // Trigger the file input dialog
   const handleButtonClick = () => {
@@ -27,6 +36,107 @@ const PdfViewer = () => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
+    }
+  };
+
+  useEffect(() => {
+    console.log("Inside use effect for web socket connection");
+    // Create a new WebSocket connection with gameId, teamName, and userId as query parameters
+    const ws_url = "wss://k1p17reb10.execute-api.us-east-1.amazonaws.com/dev";
+    const ws_url_with_query_params =
+      ws_url + `?roomId=${roomId}&userId=${userId}&userType=${userType}`;
+    const ws = new WebSocket(ws_url_with_query_params);
+
+    // Event listener for when the connection is established
+    ws.onopen = () => {
+      console.log("WebSocket connection established.");
+      setSocket(ws); // Save the WebSocket instance to state
+    };
+
+    // Event listener for incoming messages from the server
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      console.log("Received message:", message);
+
+      if (message.quiz_questions) {
+        // setQuizQuestions(message.quiz_questions);
+        setQuizNumber(message.quiz_number);
+        setTopic(message.topic);
+      }
+    };
+
+    // Event listener for WebSocket errors
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    // Event listener for when the connection is closed
+    ws.onclose = () => {
+      console.log("WebSocket connection closed.");
+      setSocket(null); // Reset the WebSocket instance when connection is closed
+      // Redirect to the home page or any other page as needed
+      // navigate('/');
+    };
+
+    // Clean up the WebSocket connection when the component unmounts
+    return () => {
+      if (
+        ws.readyState === WebSocket.OPEN ||
+        ws.readyState === WebSocket.CONNECTING
+      ) {
+        ws.close();
+      }
+    };
+  }, []);
+
+  const handleStartQuiz = async () => {
+    let qNum = 1,
+      qtopic = "AWS";
+    const quizDetails = {
+      pageNumber: pageNumber,
+      roomId,
+      quizNumber: qNum,
+      topic: qtopic,
+    };
+    console.log(quizDetails);
+    setQuizNumber(0);
+    const response = await fetch("/quiz/startQuiz", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(quizDetails),
+    });
+
+    const startQuizResponse = await response.json();
+    console.log("startQuizResponse: ", startQuizResponse);
+
+    if (response.status == 200) {
+      setQuizNumber(qNum);
+      setTopic(qtopic);
+    }
+  };
+
+  const handleEndQuiz = async () => {
+    const quizDetails = {
+      roomId,
+      quizNumber,
+      topic,
+    };
+    const response = await fetch("/quiz/endQuiz", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(quizDetails),
+    });
+
+    const endQuizResponse = await response.json();
+    console.log("endQuizResponse: ", endQuizResponse);
+
+    if (response.status == 200) {
+      setQuizNumber(0);
+      setTopic("");
     }
   };
 
@@ -53,19 +163,29 @@ const PdfViewer = () => {
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append(
+      "jsonString",
+      JSON.stringify({
+        roomId: roomId,
+        roomName: sessionStorage.getItem("roomName"),
+      })
+    );
     // uploading to s3
     try {
-      const response = await axios.post("/upload", formData, {
+      const response = await axios.post("/quiz/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        body: JSON.stringify({
+          roomId: roomId,
+          roomName: sessionStorage.getItem("roomName"),
+        }),
       });
-      console.log("File uploaded successfully", response.data);
-      alert("File uploaded successfully");
-      if(await getExtracts()){
+      if (response.status == 200) {
+        console.log("File uploaded successfully", response.data);
+        setQuizCompleted(true);
         setisLoading(false);
       }
-      
     } catch (error) {
       console.error("Error uploading file", error);
       alert("Error uploading file");
@@ -80,13 +200,13 @@ const PdfViewer = () => {
         throw new Error("Network response was not ok");
       } else {
         const data = await response.json();
-        setBlocks(data);
         console.log(data);
       }
     } catch (error) {
       console.error("Error:", error);
     }
   };
+
   const blocksForCurrentPage = blocks.filter(
     (block) => block.page === pageNumber
   );
@@ -105,14 +225,14 @@ const PdfViewer = () => {
           </Document>
           <div>
             <button
-              className="btn-create-room"
+              className="btn-pages"
               onClick={goToPrevPage}
               disabled={pageNumber <= 1}
             >
               Previous
             </button>
             <button
-              className="btn-create-room"
+              className="btn-pages"
               onClick={goToNextPage}
               disabled={pageNumber >= numPages}
             >
@@ -133,24 +253,53 @@ const PdfViewer = () => {
           accept="application/pdf"
         />
         <button className="btn-create-room" onClick={handleButtonClick}>
-          Upload PDF
+          Select Doc
         </button>
-        <button className="btn-create-room" onClick={handleFormSubmit}>
-          Send Insights to Students
-        </button>
+        {isLoading == false ? (
+          <>
+            <button className="btn-create-room" onClick={handleFormSubmit}>
+              Upload to Cloud?
+            </button>
+          </>
+        ) : (
+          <>
+            <h4>Uploading....</h4>
+          </>
+        )}
+      </div>
 
-        {blocks.length > 0 ? (
-          <div className="room-id-display1">
-            <ul>
-              {blocksForCurrentPage.map((block, index) => (
-                <div className="">
-                  <li key={index}>{`Page ${block.page}: ${block.text}`}</li>
-                </div>
-              ))}
-            </ul>
+      <div className="room-id-display1">
+        <h1>Quiz Details:</h1>
+        {quizNumber >= 1 ? (
+          <div>
+            <div className="horizontal-container">
+              <h2>Ongoing quiz:</h2>
+              <p>Quiz Number: {quizNumber}</p>
+              {/* <p>Quiz Topic: {topic}</p> */}
+
+              <button className="btn-create-room" onClick={handleEndQuiz}>
+                End Quiz
+              </button>
+            </div>
           </div>
         ) : (
-          <div className="">{isLoading==true ?(<div className="spinner"></div>):""}</div>
+          <div>
+            <div className="">
+              {quizNumber == 0 ? (
+                <>
+                  <h2>Starting Quiz....</h2>
+                  <div className="spinner"></div>
+                </>
+              ) : (
+                <>
+                  <p>No ongoing quizes!</p>
+                  <button className="btn-create-room" onClick={handleStartQuiz}>
+                    Start Quiz
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
         )}
       </div>
     </div>

@@ -28,10 +28,10 @@
   
   .btn-create-room {
     padding: 10px 20px;
-    margin: 10px 0;
+    margin: 10px 10px;
     cursor: pointer;
     font-size: 16px;
-    background-color: #007bff;
+    background-color: #ff8d54;
     color: white;
     border: none;
     border-radius: 5px;
@@ -40,7 +40,7 @@
   }
   
   .btn-create-room:hover {
-    background-color: #0056b3;
+    background-color: #ff6b8b;
   }
   
   .room-id-display {
@@ -69,8 +69,8 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    border-left-color: #09f;
-    animation: spin 1s ease infinite;
+    border-left-color: #ff6b8b;
+    animation: spin 1s ease-out infinite;
   }
   
   @keyframes spin {
@@ -82,3 +82,22 @@
     }
   }
   
+
+  .btn-pages {
+    padding: 10px 20px;
+    margin: 10px 20px 20px 50px; 
+    cursor: pointer;
+    font-size: 12px;
+    background-color: #ff8d54;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    transition: background-color 0.5s;
+  }
+  
+  .btn-pages:hover {
+    background-color: #ff6b8b;
+    color: white;
+    border: none;
+  }

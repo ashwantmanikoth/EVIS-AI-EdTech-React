@@ -94,57 +94,57 @@ const ProfessorRoom = (props) => {
     }
   };
 
-  const handleStartQuiz = async () => {
-    let qNum = 1,
-      qtopic = "AWS";
-    const quizDetails = {
-      roomId,
-      quizNumber: qNum,
-      topic: qtopic,
-    };
-    console.log(quizDetails);
+  // const handleStartQuiz = async () => {
+  //   let qNum = 1,
+  //     qtopic = "AWS";
+  //   const quizDetails = {
+  //     roomId,
+  //     quizNumber: qNum,
+  //     topic: qtopic,
+  //   };
+  //   console.log(quizDetails);
 
-    const response = await fetch("/quiz/startQuiz", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(quizDetails),
-    });
+  //   const response = await fetch("/quiz/startQuiz", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(quizDetails),
+  //   });
 
-    const startQuizResponse = await response.json();
-    console.log("startQuizResponse: ", startQuizResponse);
+  //   const startQuizResponse = await response.json();
+  //   console.log("startQuizResponse: ", startQuizResponse);
 
-    if (response.status == 200) {
-      setQuizNumber(qNum);
-      setTopic(qtopic);
-    }
-  };
+  //   if (response.status == 200) {
+  //     setQuizNumber(qNum);
+  //     setTopic(qtopic);
+  //   }
+  // };
 
-  const handleEndQuiz = async () => {
-    const quizDetails = {
-      roomId,
-      quizNumber,
-      topic,
-    };
-    console.log(quizDetails);
+  // const handleEndQuiz = async () => {
+  //   const quizDetails = {
+  //     roomId,
+  //     quizNumber,
+  //     topic,
+  //   };
+  //   console.log(quizDetails);
 
-    const response = await fetch("/quiz/endQuiz", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(quizDetails),
-    });
+  //   const response = await fetch("/quiz/endQuiz", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(quizDetails),
+  //   });
 
-    const endQuizResponse = await response.json();
-    console.log("endQuizResponse: ", endQuizResponse);
+  //   const endQuizResponse = await response.json();
+  //   console.log("endQuizResponse: ", endQuizResponse);
 
-    if (response.status == 200) {
-      setQuizNumber(-1);
-      setTopic("");
-    }
-  };
+  //   if (response.status == 200) {
+  //     setQuizNumber(-1);
+  //     setTopic("");
+  //   }
+  // };
 
   const navigate = useNavigate();
 
@@ -170,31 +170,9 @@ const ProfessorRoom = (props) => {
               Delete Room
             </button>
           </div>
-
-          <h1>Quiz Details:</h1>
-          {quizNumber != -1 ? (
-            <div>
-              <div className="horizontal-container">
-                <h2>Ongoing quiz:</h2>
-                <p>Quiz Number: {quizNumber}</p>
-                <p>Quiz Topic: {topic}</p>
-
-                <button className="btn-create-room" onClick={handleEndQuiz}>
-                  End Quiz
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div>
-              <p>No ongoing quizes!</p>
-              <button className="btn-create-room" onClick={handleStartQuiz}>
-                Start Quiz
-              </button>
-            </div>
-          )}
         </div>
         <div className="room-id-display">
-          <div className="ho.rizontal-container">
+          <div className="horizontal-container">
             <PdfViewer />
           </div>
         </div>

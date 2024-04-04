@@ -20,7 +20,7 @@ function Body() {
   const handleSubmit = async () => {
     try {
       console.log(text);
-      const response = await fetch("http://localhost:3001/analyze-text", {
+      const response = await fetch("/analyze-text", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
