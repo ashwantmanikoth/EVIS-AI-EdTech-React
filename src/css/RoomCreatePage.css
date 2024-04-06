@@ -3,7 +3,7 @@
   flex-direction: row; /* Arrange children horizontally */
   justify-content: space-between; /* Space out the containers */
   align-items: start; /* Align items to the start of the container */
-  width: 100%; /* Full width of the parent */
+  /* width: 100%;  */
   padding: 20px; /* Padding around the entire container */
 }
 
@@ -30,6 +30,7 @@
     padding: 10px 20px;
     margin: 10px 10px;
     cursor: pointer;
+    
     font-size: 16px;
     background-color: #ff8d54;
     color: white;
@@ -50,12 +51,17 @@
     background-color: #f8f9fa;
     border: 11px solid #ddd;
     border-radius: 28px;
+    max-height: 520px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
 }
 
-  .room-id-display1 {
+  .quiz-menu {
     /* margin-right: 50%; */
     /* margin-left: auto;  */
-    max-height: 200px; 
+    max-height: 400px; 
+    width: 100%;
     overflow-y: auto;
     padding-right: 20px;
     padding-left: 20px;
@@ -84,8 +90,9 @@
   
 
   .btn-pages {
-    padding: 10px 20px;
-    margin: 10px 20px 20px 50px; 
+    width: 40%;
+    padding: 5% 5% 5% 5%;
+    margin: 15% 5% 5% 5%; 
     cursor: pointer;
     font-size: 12px;
     background-color: #ff8d54;
@@ -100,4 +107,13 @@
     background-color: #ff6b8b;
     color: white;
     border: none;
+  }
+
+  .expand-icon{
+    position: relative;
+    opacity: 30%;
+    top: 30px;
+    left: 290px;
+    /* padding: 10px; */
+    cursor: pointer;
   }

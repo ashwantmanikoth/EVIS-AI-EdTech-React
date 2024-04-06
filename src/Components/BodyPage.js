@@ -10,12 +10,12 @@ function Body() {
   const [userType, setUserType] = useState(null);
 
   useEffect(() => {
-    const storedUserType =sessionStorage.getItem("userType");
+    const storedUserType = sessionStorage.getItem("userType");
     if (storedUserType != null) {
       setUserType(storedUserType);
       setIsSignedIn(true);
     }
-  } );
+  });
 
   const handleSubmit = async () => {
     try {
@@ -66,14 +66,24 @@ function Body() {
           <></>
         )}
 
-        <div className="menuItem">
+        {/* <div className="menuItem">
           <Link to="/userprofile" className="menuLink">
             Get current User Profile{" "}
+          </Link>
+        </div> */}
+        <div className="menuItem">
+          <Link to="/sessionReport" className="menuLink">
+            Session Report  //Todo
+          </Link>
+        </div>
+        <div className="menuItem">
+          <Link to="/feedbackPage" className="menuLink">
+            View Feedbacks //todo
           </Link>
         </div>
         <div className="menuItem">
           <Link to="/keyphrase" className="menuLink">
-            Identify Key Phrases
+            My Account {sessionStorage.getItem("userName")}
           </Link>
         </div>
       </div>

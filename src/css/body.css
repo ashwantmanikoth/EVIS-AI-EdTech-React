@@ -23,4 +23,11 @@
     color: #fff;
     cursor: pointer;
   }
-  
+
+  .footer{
+    position:fixed;
+    width: 100%;
+    bottom: 0px;
+    padding-top: 20px !important ; 
+    padding-bottom: 11px !important ; 
+  }
