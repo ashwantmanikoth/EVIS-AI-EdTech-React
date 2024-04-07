@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../css/body.css";
+import "../css/RoomCreatePage.css";
 
 function Reports() {
   const [rooms, setRooms] = useState([]);
@@ -101,20 +102,25 @@ function Reports() {
 
   return (
     <>
+    <div className="horizontal-container">
+    <h3>Choose Your past room to view Session Report</h3>
       {rooms.map((room) => (
-        <div className="cntainer">
+        
+      
           <ul className="no-bullets">
             <li key={room.id}>
               <button
                 className="btn-list"
                 onClick={() => setSelectedRoom(room.id)}
               >
-                {`Room ID: ${room.id} - Created At: ${room.createdAt}`}
+                {`Room ID: ${room.id}`}
               </button>
             </li>
           </ul>
-        </div>
+         
       ))}
+    </div>
+      
       {selectedRoom && (
         <div className="quiz-container">
           {quizzes.map((quiz, index) => (
