@@ -16,6 +16,10 @@ const WebSocketComponent = () => {
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [feedBack, setFeedback] = useState("");
+  const [showFeedback, setShowFeedBack] = useState(false);
+  const [enableSubmitFeedback, setEnableSubmitFeedBack] = useState(false);
+
   useEffect(() => {
     console.log("Inside use effect for web socket connection")
     // Create a new WebSocket connection with gameId, teamName, and userId as query parameters
@@ -44,6 +48,10 @@ const WebSocketComponent = () => {
           setQuizQuestions([]);
           setQuizNumber(-1);
           setTopic("");
+
+          setShowFeedBack(true);
+          setFeedback("");
+          setEnableSubmitFeedBack(true);
         }
       }
     };
@@ -93,42 +101,37 @@ const WebSocketComponent = () => {
     setSelectedAnswers(updatedSelectedAnswers);
   };
 
-
-  const [feedBack, setFeedback] = useState("");
-  const [showFeedback, setShowFeedBack] = useState(true);
-  const [enableSubmitFeedback, setEnableSubmitFeedBack] = useState(true);
-
   const handleSubmitFeedback = async () => {
-    setEnableSubmitFeedBack(false);
-    const submitFeedbackRequest = {
-      roomId,
-      userId,
-      quizNumber,
-      feedBack
-    }
-    console.log(submitFeedbackRequest);
+    if (feedBack.trim() !== '') {
+      // setEnableSubmitFeedBack(false);
+      const feedbackData = {
+        roomId,
+        userId,
+        sessionId: 1,
+        feedBack
+      };
 
-    const response = await fetch("/feedback/submit", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(submitFeedbackRequest),
-    });
+      const submitFeedbackRequest = {
+        "action": "sendFeedback",
+        "feedbackData": feedbackData
+      }
+      console.log(submitFeedbackRequest);
 
-    const submitFeedbackResponse = await response.json();
-    console.log("submitFeedbackResponse: ", submitFeedbackResponse);
+      socket.send(JSON.stringify(submitFeedbackRequest));
 
-    if (response.status == 200) {
-      setShowFeedBack(false);
+      // setShowFeedBack(false);
+      setShowErrorMessage(false);
+      setErrorMessage("");
     } else {
-      setEnableSubmitFeedBack(true);
+      setShowErrorMessage(true);
+      setErrorMessage("Please enter a feedback to submit");
     }
   }
 
   // Handler function to handle form submission
   const handleSubmit = async (event) => {
     console.log('Submitted Answers:', selectedAnswers);
+
     // Check if all questions are answered
     const allQuestionsAnswered = selectedAnswers.every(answer => answer !== null);
     if (selectedAnswers.length == 0 || !allQuestionsAnswered) {
@@ -140,33 +143,25 @@ const WebSocketComponent = () => {
     setShowErrorMessage(false);
     setErrorMessage("");
 
-    const submitAnswerRequest = {
+    const quizAnswerData = {
       roomId,
       userId,
       quizNumber,
       topic,
       selectedAnswers
     }
-    console.log(submitAnswerRequest);
 
-    const response = await fetch("/quiz/submitAnswer", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(submitAnswerRequest),
-    });
-
-    const submitAnswerResponse = await response.json();
-    console.log("submitAnswerResponse: ", submitAnswerResponse);
-
-    if (response.status == 200) {
-      setQuizQuestions([]);
-      setShowErrorMessage(false);
-    } else {
-      setShowErrorMessage(true);
-      setErrorMessage(submitAnswerResponse.message);
+    const submitQuizRequest = {
+      "action": "submitQuiz",
+      "quizAnswerData": quizAnswerData
     }
+    console.log(submitQuizRequest);
+    
+    socket.send(JSON.stringify(submitQuizRequest));
+
+    setQuizQuestions([]);
+    setShowErrorMessage(false);
+
   };
 
   const navigate = useNavigate();
@@ -179,6 +174,10 @@ const WebSocketComponent = () => {
       <p>Welcome to the room! Room ID: <b>{roomId}</b></p>
       <p>Stay tuned for interactive content.</p>
 
+      {showErrorMessage && (
+        <p style={{ color: 'red' }}>{errorMessage}</p>
+      )}
+
       {quizQuestions && quizQuestions.length > 0 && (
         <div>
           <QuizComponent
@@ -186,9 +185,6 @@ const WebSocketComponent = () => {
             selectedAnswers={selectedAnswers}
             onSelectAnswer={handleSelectAnswer}
           />
-          {showErrorMessage && (
-            <p style={{ color: 'red' }}>{errorMessage}</p>
-          )}
           <button onClick={handleSubmit}>Submit</button>
         </div>
       )}
