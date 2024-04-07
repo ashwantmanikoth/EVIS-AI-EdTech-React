@@ -49,11 +49,6 @@ function Body() {
               </Link>
             </div>
             <div className="menuItem">
-              <Link to="/feedbackPage" className="menuLink">
-                View Feedbacks //todo
-              </Link>
-            </div>
-            <div className="menuItem">
               <Link to="/keyphrase" className="menuLink">
                 My Account <p>{userName}</p>
               </Link>
@@ -76,6 +71,26 @@ function Body() {
               {text}
             </Typography>
           ))}
+          <div>
+            <button
+              className="btn-pages"
+              onClick={() =>
+                (window.location.href =
+                  "https://evis-student.auth.us-east-1.amazoncognito.com/login?client_id=1e5ud4pjf6afm1j30s49apgiih&response_type=code&scope=aws.cognito.signin.user.admin+email+openid&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback")
+              }
+            >
+              Sign In as Student
+            </button>
+            <button
+              className="btn-pages"
+              onClick={() =>
+                (window.location.href =
+                  "https://evis-professors.auth.us-east-1.amazoncognito.com/login?client_id=7nsa0cqntm824rhqvo389r73eu&response_type=code&scope=aws.cognito.signin.user.admin+email+openid+phone&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback%2Fprofessor")
+              }
+            >
+              Sign In as Professor
+            </button>
+          </div>
         </div>
       )}
     </>

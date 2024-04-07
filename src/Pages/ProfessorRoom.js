@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import PdfViewer from "./PdfViewer";
 import { useNavigate } from "react-router-dom";
+import { Insights } from "@mui/icons-material";
 
 const ProfessorRoom = (props) => {
   const [parentValue, setParentValue] = useState([]);
@@ -37,6 +38,9 @@ const ProfessorRoom = (props) => {
         // setQuizQuestions(message.quiz_questions);
         setQuizNumber(message.quiz_number);
         setTopic(message.topic);
+      }else if(message.insights){
+
+          console.log(message.insights)
       }
     };
 
@@ -156,9 +160,9 @@ const ProfessorRoom = (props) => {
   return (
     <>
       <div className="page-container">
-        <div className="room-id-display">
+        <div className="room-id-home">
           <h1>Welcome to the room: {props.roomName}</h1>
-          <div className="horizontal-container">
+          <div className="horizontal-contaner">
             <h2>Room ID: {props.roomId}</h2>
             <p>Share this ID with your students to join.</p>
             {/* <ProfessorRoom /> Uncomment or remove as needed */}
@@ -171,7 +175,7 @@ const ProfessorRoom = (props) => {
             </button>
           </div>
         </div>
-        <div className="room-id-display">
+        <div>
           <div className="horizontal-container">
             <PdfViewer />
           </div>
