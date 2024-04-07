@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExpandArrowsAlt } from "@fortawesome/free-solid-svg-icons";
 
 // Setting up the worker path
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -16,9 +18,10 @@ const PdfViewer = () => {
   const [isLoading, setisLoading] = useState(false);
 
   const [file, setFile] = useState(null);
-  const [quizCompleted,setQuizCompleted] =useState(false);
+  const [quizCompleted, setQuizCompleted] = useState(false);
   const fileInputRef = useRef(null);
   const [quizNumber, setQuizNumber] = useState(-1);
+  const [quizStatus, setQuizStatus] = useState(-1); //-1 no Quiz 1 quiz Started 0 starting quiz
   const [topic, setTopic] = useState("AWS");
   const userId = sessionStorage.getItem("userEmail");
   const userType = sessionStorage.getItem("userType");
@@ -38,7 +41,17 @@ const PdfViewer = () => {
       setFile(selectedFile);
     }
   };
+  const handleQuizInsights = async (event) => {
+    const response = await fetch("/quiz/getInsight", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ roomId: roomId }),
+    });
 
+    console.log(response);
+  };
   useEffect(() => {
     console.log("Inside use effect for web socket connection");
     // Create a new WebSocket connection with gameId, teamName, and userId as query parameters
@@ -99,7 +112,7 @@ const PdfViewer = () => {
       topic: qtopic,
     };
     console.log(quizDetails);
-    setQuizNumber(0);
+    setQuizStatus(0);
     const response = await fetch("/quiz/startQuiz", {
       method: "POST",
       headers: {
@@ -114,6 +127,9 @@ const PdfViewer = () => {
     if (response.status == 200) {
       setQuizNumber(qNum);
       setTopic(qtopic);
+      setQuizStatus(1); //quiz successs
+    } else {
+      setQuizStatus(0); //fail to sytart quiz
     }
   };
 
@@ -135,7 +151,8 @@ const PdfViewer = () => {
     console.log("endQuizResponse: ", endQuizResponse);
 
     if (response.status == 200) {
-      setQuizNumber(0);
+      setQuizStatus(-1);
+      setQuizCompleted(true);
       setTopic("");
     }
   };
@@ -143,6 +160,7 @@ const PdfViewer = () => {
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
     setPageNumber(1); // Reset to first page whenever a new document is loaded
+    handleFormSubmit();
   }
 
   function goToPrevPage() {
@@ -153,8 +171,7 @@ const PdfViewer = () => {
     setPageNumber(pageNumber + 1);
   }
 
-  const handleFormSubmit = async (event) => {
-    event.preventDefault(); // Prevent the form from submitting in the traditional way
+  const handleFormSubmit = async () => {
     setisLoading(true);
     if (!file) {
       alert("Please select a file to upload");
@@ -213,95 +230,97 @@ const PdfViewer = () => {
 
   return (
     <div>
-      {file && (
+      {file != null ? (
         <div>
-          <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-            <Page
-              pageNumber={pageNumber}
-              width={300}
-              style={{ border: "10px solid black" }}
-            />
-            {/* Adjust width as needed */}
-          </Document>
-          <div>
-            <button
-              className="btn-pages"
-              onClick={goToPrevPage}
-              disabled={pageNumber <= 1}
-            >
-              Previous
-            </button>
-            <button
-              className="btn-pages"
-              onClick={goToNextPage}
-              disabled={pageNumber >= numPages}
-            >
-              Next
-            </button>
+          <div className="expand-icon">
+            <FontAwesomeIcon icon={faExpandArrowsAlt} />
           </div>
+          <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+            <Page pageNumber={pageNumber} width={250} />
+          </Document>
+
+          <button
+            className="btn-pages"
+            onClick={goToPrevPage}
+            disabled={pageNumber <= 1}
+          >
+            Previous
+          </button>
+          <button
+            className="btn-pages"
+            onClick={goToNextPage}
+            disabled={pageNumber >= numPages}
+          >
+            Next
+          </button>
+
           <p>
             Page {pageNumber} of {numPages}
           </p>
+
+          <div className="quiz-menu">
+            {/* To do- on selection itself the docuement should be send to processing */}
+            {/* {isLoading == false ? (
+              <>
+                <button className="btn-create-room" onClick={handleFormSubmit}>
+                  Upload to Extract
+                </button>
+              </>
+            ) : (
+              <>
+                <h4>Uploading....</h4>
+                <div className="spinner"></div>
+              </>
+            )} */}
+            <h1>Quiz Details:</h1>
+            {quizStatus == 1 ? (
+              <div className="horizontal-container">
+                <h2>Ongoing quiz:</h2>
+                <p>Quiz Number: {quizNumber}</p>
+                {/* <p>Quiz Topic: {topic}</p> */}
+                <button className="btn-create-room" onClick={handleEndQuiz}>
+                  End Quiz
+                </button>
+              </div>
+            ) : (
+              <>
+                {quizStatus == 0 ? (
+                  <>
+                    <h2>Starting Quiz....</h2>
+                    <div className="spinner"></div>
+                  </>
+                ) : (
+                  <>
+                    <p>No ongoing quizes!</p>
+                    <button
+                      className="btn-create-room"
+                      onClick={handleStartQuiz}
+                    >
+                      Start Quiz
+                    </button>
+                  </>
+                )}
+              </>
+            )}
+          </div>
         </div>
-      )}
-      <div>
-        <input
-          type="file"
-          style={{ display: "none" }} // Hide the file input
-          ref={fileInputRef}
-          onChange={onFileChange}
-          accept="application/pdf"
-        />
-        <button className="btn-create-room" onClick={handleButtonClick}>
-          Select Doc
-        </button>
-        {isLoading == false ? (
-          <>
-            <button className="btn-create-room" onClick={handleFormSubmit}>
-              Upload to Cloud?
+      ) : (
+        <>
+          <div>
+            <input
+              type="file"
+              style={{ display: "none" }} // Hide the file input
+              ref={fileInputRef}
+              onChange={onFileChange}
+              accept="application/pdf"
+            />
+            <h3>Upload lecture document</h3>
+            <button className="btn-create-room" onClick={handleButtonClick}>
+              Choose from Computer
             </button>
-          </>
-        ) : (
-          <>
-            <h4>Uploading....</h4>
-          </>
-        )}
-      </div>
-
-      <div className="room-id-display1">
-        <h1>Quiz Details:</h1>
-        {quizNumber >= 1 ? (
-          <div>
-            <div className="horizontal-container">
-              <h2>Ongoing quiz:</h2>
-              <p>Quiz Number: {quizNumber}</p>
-              {/* <p>Quiz Topic: {topic}</p> */}
-
-              <button className="btn-create-room" onClick={handleEndQuiz}>
-                End Quiz
-              </button>
-            </div>
           </div>
-        ) : (
-          <div>
-            <div className="">
-              {quizNumber == 0 ? (
-                <>
-                  <h2>Starting Quiz....</h2>
-                  <div className="spinner"></div>
-                </>
-              ) : (
-                <>
-                  <p>No ongoing quizes!</p>
-                  <button className="btn-create-room" onClick={handleStartQuiz}>
-                    Start Quiz
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 };

@@ -6,6 +6,7 @@ import "../css/Room.css";
 
 const WebSocketComponent = () => {
   const roomId = sessionStorage.getItem("roomId");
+  const roomName = sessionStorage.getItem("roomName");
   const userId = sessionStorage.getItem("userEmail");
   const userType = sessionStorage.getItem("userType");
 
@@ -21,22 +22,23 @@ const WebSocketComponent = () => {
   const [enableSubmitFeedback, setEnableSubmitFeedBack] = useState(false);
 
   useEffect(() => {
-    console.log("Inside use effect for web socket connection")
+    console.log("Inside use effect for web socket connection");
     // Create a new WebSocket connection with gameId, teamName, and userId as query parameters
-    const ws_url = "wss://k1p17reb10.execute-api.us-east-1.amazonaws.com/dev"
-    const ws_url_with_query_params = ws_url + `?roomId=${roomId}&userId=${userId}&userType=${userType}`;
+    const ws_url = "wss://k1p17reb10.execute-api.us-east-1.amazonaws.com/dev";
+    const ws_url_with_query_params =
+      ws_url + `?roomId=${roomId}&userId=${userId}&userType=${userType}`;
     const ws = new WebSocket(ws_url_with_query_params);
 
     // Event listener for when the connection is established
     ws.onopen = () => {
-      console.log('WebSocket connection established.');
+      console.log("WebSocket connection established.");
       setSocket(ws); // Save the WebSocket instance to state
     };
 
     // Event listener for incoming messages from the server
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      console.log('Received message:', message);
+      console.log("Received message:", message);
 
       if (message.quizQuestions) {
         setQuizQuestions(message.quizQuestions);
@@ -58,12 +60,12 @@ const WebSocketComponent = () => {
 
     // Event listener for WebSocket errors
     ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
+      console.error("WebSocket error:", error);
     };
 
     // Event listener for when the connection is closed
     ws.onclose = () => {
-      console.log('WebSocket connection closed.');
+      console.log("WebSocket connection closed.");
       setSocket(null); // Reset the WebSocket instance when connection is closed
       // Redirect to the home page or any other page as needed
       // navigate('/');
@@ -71,7 +73,10 @@ const WebSocketComponent = () => {
 
     // Clean up the WebSocket connection when the component unmounts
     return () => {
-      if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
+      if (
+        ws.readyState === WebSocket.OPEN ||
+        ws.readyState === WebSocket.CONNECTING
+      ) {
         ws.close();
       }
     };
@@ -81,18 +86,20 @@ const WebSocketComponent = () => {
     // Close the WebSocket connection
     if (socket) {
       const closeMessage = JSON.stringify({
-        action: 'close',
+        action: "close",
         roomId: roomId,
       });
       socket.close(1000, closeMessage);
     }
 
     // Redirect to the home page or any other page as needed
-    navigate('/');
+    navigate("/");
   };
 
   // State to store selected answers for each question
-  const [selectedAnswers, setSelectedAnswers] = useState(Array(quizQuestions.length).fill(null));
+  const [selectedAnswers, setSelectedAnswers] = useState(
+    Array(quizQuestions.length).fill(null)
+  );
 
   // Handler function to update selected answers
   const handleSelectAnswer = (questionIndex, optionIndex) => {
@@ -133,7 +140,9 @@ const WebSocketComponent = () => {
     console.log('Submitted Answers:', selectedAnswers);
 
     // Check if all questions are answered
-    const allQuestionsAnswered = selectedAnswers.every(answer => answer !== null);
+    const allQuestionsAnswered = selectedAnswers.every(
+      (answer) => answer !== null
+    );
     if (selectedAnswers.length == 0 || !allQuestionsAnswered) {
       setShowErrorMessage(true);
       setErrorMessage("Please answer all questions before submitting.");
@@ -165,8 +174,6 @@ const WebSocketComponent = () => {
   };
 
   const navigate = useNavigate();
-
-
 
   return (
     <div className="container" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -220,7 +227,6 @@ const WebSocketComponent = () => {
 
 
       <button onClick={handleExitRoom}>Exit Room</button>
-
     </div>
   );
 };
