@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Container, Typography } from "@mui/material";
 import QuizComponent from '../Components/QuizComponent';
 import "../css/Room.css";
 
@@ -14,50 +15,6 @@ const WebSocketComponent = () => {
   const [topic, setTopic] = useState("");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
-  // const quizNumber = 1;
-  // const quizQuestions = [
-  // {
-  //     "question": "What is the capital of France?",
-  // "options": [
-  // "Paris",
-  // "London",
-  // "Berlin",
-  // "Madrid"
-  // ],
-  // "correct_option": 0
-  // },
-  // {
-  //     "question": "Who painted the Mona Lisa?",
-  // "options": [
-  // "Leonardo da Vinci",
-  // "Pablo Picasso",
-  // "Vincent van Gogh",
-  // "Michelangelo"
-  // ],
-  // "correct_option": 1
-  // },
-  // {
-  //     "question": "What is the largest planet in our solar system?",
-  // "options": [
-  // "Jupiter",
-  // "Saturn",
-  // "Mars",
-  // "Earth"
-  // ],
-  // "correct_option": 2
-  // },
-  // {
-  //     "question": "What is the chemical symbol for gold?",
-  // "options": [
-  // "Au",
-  // "Ag",
-  // "Fe",
-  // "Cu"
-  // ],
-  // "correct_option": 3
-  // }
-  // ];
 
   useEffect(() => {
     console.log("Inside use effect for web socket connection")
@@ -136,6 +93,39 @@ const WebSocketComponent = () => {
     setSelectedAnswers(updatedSelectedAnswers);
   };
 
+
+  const [feedBack, setFeedback] = useState("");
+  const [showFeedback, setShowFeedBack] = useState(true);
+  const [enableSubmitFeedback, setEnableSubmitFeedBack] = useState(true);
+
+  const handleSubmitFeedback = async () => {
+    setEnableSubmitFeedBack(false);
+    const submitFeedbackRequest = {
+      roomId,
+      userId,
+      quizNumber,
+      feedBack
+    }
+    console.log(submitFeedbackRequest);
+
+    const response = await fetch("/feedback/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(submitFeedbackRequest),
+    });
+
+    const submitFeedbackResponse = await response.json();
+    console.log("submitFeedbackResponse: ", submitFeedbackResponse);
+
+    if (response.status == 200) {
+      setShowFeedBack(false);
+    } else {
+      setEnableSubmitFeedBack(true);
+    }
+  }
+
   // Handler function to handle form submission
   const handleSubmit = async (event) => {
     console.log('Submitted Answers:', selectedAnswers);
@@ -169,7 +159,7 @@ const WebSocketComponent = () => {
 
     const submitAnswerResponse = await response.json();
     console.log("submitAnswerResponse: ", submitAnswerResponse);
-    
+
     if (response.status == 200) {
       setQuizQuestions([]);
       setShowErrorMessage(false);
@@ -186,8 +176,8 @@ const WebSocketComponent = () => {
   return (
     <div className="container" style={{ display: 'flex', flexDirection: 'column' }}>
 
-        <p>Welcome to the room! Room ID: <b>{roomId}</b></p>
-        <p>Stay tuned for interactive content.</p>
+      <p>Welcome to the room! Room ID: <b>{roomId}</b></p>
+      <p>Stay tuned for interactive content.</p>
 
       {quizQuestions && quizQuestions.length > 0 && (
         <div>
@@ -202,6 +192,36 @@ const WebSocketComponent = () => {
           <button onClick={handleSubmit}>Submit</button>
         </div>
       )}
+
+      {showFeedback && (
+        <Container
+          maxWidth="sm"
+          sx={{
+            background: "#cfe8fc",
+            p: 2,
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+            mt: 2,
+          }}
+        >
+
+          <Typography variant="body1" align="center">
+            Please provide your feedback about this lecture
+          </Typography>
+          <textarea
+            className="textarea-style"
+            value={feedBack}
+            onChange={(e) => setFeedback(e.target.value)}
+            placeholder="Enter text to analyze"
+          />
+          {enableSubmitFeedback && (
+            <button className="btn-create-room" align="centre" onClick={handleSubmitFeedback}>
+              Submit feedback
+            </button>
+          )}
+        </Container>
+      )}
+
 
       <button onClick={handleExitRoom}>Exit Room</button>
 
