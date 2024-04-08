@@ -135,7 +135,7 @@ function Navbar() {
 
           <MenuItem onClick={handleCloseMenu}>
             <a
-              href="https://evis-professors.auth.us-east-1.amazoncognito.com/login?client_id=7nsa0cqntm824rhqvo389r73eu&response_type=code&scope=aws.cognito.signin.user.admin+email+openid+phone&redirect_uri=https%3A%2F54.226.10.191%3A3000%2Fauth%2Fcallback%2Fprofessor"
+              href="https://evis-professors.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=7nsa0cqntm824rhqvo389r73eu&response_type=code&scope=aws.cognito.signin.user.admin+email+openid+phone&redirect_uri=https%3A%2F%2F54.226.10.191%3A3000%2Fauth%2Fcallback%2Fprofessor"
               // href="https://evis-professors.auth.us-east-1.amazoncognito.com/login?client_id=7nsa0cqntm824rhqvo389r73eu&response_type=code&scope=aws.cognito.signin.user.admin+email+openid+phone&redirect_uri=https%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback%2Fprofessor"
               rel="noopener noreferrer"
               style={{ textDecoration: "none", color: "inherit" }}
