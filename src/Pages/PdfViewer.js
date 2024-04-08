@@ -20,7 +20,7 @@ const PdfViewer = () => {
   const [file, setFile] = useState(null);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const fileInputRef = useRef(null);
-  const [quizNumber, setQuizNumber] = useState(-1);
+  const [quizNumber, setQuizNumber] = useState(0);
   const [quizStatus, setQuizStatus] = useState(-1); //-1 no Quiz 1 quiz Started 0 starting quiz
   const [topic, setTopic] = useState("AWS");
   const userId = sessionStorage.getItem("userEmail");
@@ -103,8 +103,10 @@ const PdfViewer = () => {
   }, []);
 
   const handleStartQuiz = async () => {
-    let qNum = 1,
+    let qNum = quizNumber+1,
       qtopic = "AWS";
+      console.log("current qNum is"+qNum)
+
     const quizDetails = {
       pageNumber: pageNumber,
       roomId,
@@ -123,7 +125,7 @@ const PdfViewer = () => {
 
     const startQuizResponse = await response.json();
     console.log("startQuizResponse: ", startQuizResponse);
-
+    
     if (response.status == 200) {
       setQuizNumber(qNum);
       setTopic(qtopic);

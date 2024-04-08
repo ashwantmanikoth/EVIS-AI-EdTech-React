@@ -15,6 +15,8 @@ const ProfessorRoom = (props) => {
 
   const [socket, setSocket] = useState(null);
 
+  const [data, setData] = useState(null);
+  
   useEffect(() => {
     console.log("Inside use effect for web socket connection");
     // Create a new WebSocket connection with gameId, teamName, and userId as query parameters
@@ -36,11 +38,13 @@ const ProfessorRoom = (props) => {
 
       if (message.quiz_questions) {
         // setQuizQuestions(message.quiz_questions);
+        setData(null)
         setQuizNumber(message.quiz_number);
         setTopic(message.topic);
-      }else if(message.insights){
-
-          console.log(message.insights)
+      } else if (message.insights) {
+        console.log("insights"+message.insights)
+        setData(message.insights);
+        console.log(data);
       }
     };
 
@@ -179,6 +183,25 @@ const ProfessorRoom = (props) => {
           <div className="horizontal-container">
             <PdfViewer />
           </div>
+          <>
+            {data && (
+              <div className="page-container">
+                <div className="room-id-home ease-in">
+                  <h2>Quiz Real Time Insights</h2>
+                  <p> Total Submissions: {data.total_submissions}</p>
+                  <p>Average Score: {data.average_score}</p>
+                  <h3>Average Topic Scores:</h3>
+                  {Object.entries(data.average_topic_scores).map(
+                    ([topic, score]) => (
+                      <p key={topic}>
+                        {topic}: {score}
+                      </p>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
+          </>
         </div>
       </div>
     </>

@@ -222,6 +222,14 @@
 
 }
 
+.ease-in{
+  opacity: 0;
+  /* Set initial opacity to 0 */
+  transform: translateY(20px);
+  /* Start from 20px below */
+  animation: fadeIns 1s ease-in forwards;
+}
+
 .row-button{
   overflow-x: auto;
 }
@@ -236,4 +244,9 @@
 .document {
   zoom: 180%;
   border: 1px solid;
+}
+.chart-container {
+  width: 600px;
+  height: 400px;
+  margin: auto;
 }
