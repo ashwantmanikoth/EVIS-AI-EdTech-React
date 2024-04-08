@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../css/body.css";
 import "../css/RoomCreatePage.css";
+import AspectChart from "./AspectChart";
 
 function Reports() {
   const [rooms, setRooms] = useState([]);
@@ -87,12 +88,11 @@ function Reports() {
           });
           let quizzesData = await response.json(); // Assuming the response is directly usable
 
-          if (quizzes.length==0) {
-              console.log(quizzesData)
-              const transformedData = transformQuizData(quizzesData);
-              setQuizzes(transformedData);
-            }
-          else {
+          if (quizzes.length == 0) {
+            console.log(quizzesData);
+            const transformedData = transformQuizData(quizzesData);
+            setQuizzes(transformedData);
+          } else {
             setQuizzes([]);
             console.error("Fetch quizzes response not OK:", quizzesData);
           }
@@ -100,7 +100,7 @@ function Reports() {
           console.error("Failed to fetch quizzes:", error);
         }
       }
-      
+
       async function fetchFeedBack() {
         try {
           const response = await fetch(`/room/feedbacks`, {
@@ -119,7 +119,6 @@ function Reports() {
             if (rawData) {
               // const transformQuizData = transformQuizData(rawData);
               // setQuizzes(transformQuizData);
-
             } else {
               // setQuizzes([]);
             }
@@ -140,14 +139,13 @@ function Reports() {
       <div className="row-button">
         <h3>Choose Your past room to view Session Report</h3>
         {rooms.map((room) => (
-      
-                <button key={room.id}
-                  className="btn-rows"
-                  onClick={() => setSelectedRoom(room.id)}
-                >
-                  {`Session Report for ${room.roomName}`}
-                </button>
-  
+          <button
+            key={room.id}
+            className="btn-rows"
+            onClick={() => setSelectedRoom(room.id)}
+          >
+            {`Session Report for ${room.roomName}`}
+          </button>
         ))}
       </div>
 
@@ -185,7 +183,7 @@ function Reports() {
                         {topic.score}%
                       </div>
                     </div>
-                 
+                    <AspectChart />
                   </div>
                 ))}
               </div>
