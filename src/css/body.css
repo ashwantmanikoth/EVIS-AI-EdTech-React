@@ -203,7 +203,7 @@
 
 }
 
-.btn-rows:hover {
+.btn-rows:selected {
   width: 15%;
   /* margin: 1px 0px; */
   margin-left: 2%;

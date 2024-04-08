@@ -41,10 +41,9 @@ const ProfessorRoom = (props) => {
         setData(null)
         setQuizNumber(message.quiz_number);
         setTopic(message.topic);
-      } else if (message.insights) {
-        console.log("insights"+message.insights)
-        setData(message.insights);
-        console.log(data);
+      }else if(message.insights){
+
+          console.log(message.insights)
       }
     };
 

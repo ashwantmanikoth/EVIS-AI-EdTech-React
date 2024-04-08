@@ -103,6 +103,7 @@ const PdfViewer = () => {
   }, []);
 
   const handleStartQuiz = async () => {
+    console.log("current qNum is"+qNum)
     let qNum = quizNumber+1,
       qtopic = "AWS";
       console.log("current qNum is"+qNum)

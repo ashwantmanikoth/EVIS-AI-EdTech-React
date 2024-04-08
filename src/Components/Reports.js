@@ -9,7 +9,34 @@ function Reports() {
 
   const [quizzes, setQuizzes] = useState([]);
   const [feedbacks, setFeedbacks] = useState([]);
-
+  const [data,setData]= useState([]);
+  // const data = [
+  //   {
+  //     "user_id": {"S": "sreedevi.rw@gmail.com"},
+  //     "absa": {
+  //       "L": [
+  //         {
+  //           "M": {
+  //             "score": {"S": "0.9"},
+  //             "sentiment": {"S": "POSITIVE"},
+  //             "type": {"S": "PERSON"},
+  //             "aspect": {"S": "Professor"}
+  //           }
+  //         },
+  //         {
+  //           "M": {
+  //             "score": {"S": "0.70"},
+  //             "sentiment": {"S": "NEGATIVE"},
+  //             "type": {"S": "OTHER"},
+  //             "aspect": {"S": "course"}
+  //           }
+  //         }
+  //       ]
+  //     },
+  //     "feedback": {"S": "Professor is awesome but course is difficult"},
+  //     "session_id": {"N": "1"}
+  //   }
+  // ];
   const transformQuizData = (data) => {
     return data.map((item) => ({
       name: `Quiz ${item.quiz_number.N}`,
@@ -33,7 +60,7 @@ function Reports() {
     }));
   };
 
-  // Fetch quizzes from the backend when the component mounts
+
   useEffect(() => {
     async function fetchRooms() {
       try {
@@ -117,6 +144,8 @@ function Reports() {
           if (feedbackData) {
             const rawData = feedbackData; // Assuming the response structure contains an items array
             if (rawData) {
+              console.log(rawData)
+              setData(rawData);
               // const transformQuizData = transformQuizData(rawData);
               // setQuizzes(transformQuizData);
             } else {
@@ -194,7 +223,11 @@ function Reports() {
 
         
       )}
-      <AspectChart />
+      {data && (<div>
+      <h1>Aspect Based Performance Chart</h1>
+      <AspectChart responseData={data} />
+    </div>)}
+      
     </>
   );
 }
