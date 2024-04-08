@@ -21,7 +21,7 @@ const AuthCallback = () => {
   const exchangeCodeForToken = async (code) => {
     try {
       console.log("2");
-      const response = await fetch("http://localhost:3001/api/auth/exchange", {
+      const response = await fetch("http://54.226.10.191:3001/api/auth/exchange", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code }),
