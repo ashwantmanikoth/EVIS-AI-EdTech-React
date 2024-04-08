@@ -44,6 +44,8 @@ const WebSocketComponent = () => {
         setQuizQuestions(message.quizQuestions);
         setQuizNumber(message.quizNumber);
         // setTopic(message.topic);
+        setShowFeedBack(false);
+
       }
       if (message.action) {
         if (message.action == "endQuiz") {
