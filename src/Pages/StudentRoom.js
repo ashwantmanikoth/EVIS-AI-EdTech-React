@@ -13,7 +13,7 @@ const WebSocketComponent = () => {
   const [socket, setSocket] = useState(null);
   const [quizQuestions, setQuizQuestions] = useState([]);
   const [quizNumber, setQuizNumber] = useState(null);
-  const [topic, setTopic] = useState("");
+  // const [topic, setTopic] = useState("");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -43,13 +43,13 @@ const WebSocketComponent = () => {
       if (message.quizQuestions) {
         setQuizQuestions(message.quizQuestions);
         setQuizNumber(message.quizNumber);
-        setTopic(message.topic);
+        // setTopic(message.topic);
       }
       if (message.action) {
         if (message.action == "endQuiz") {
           setQuizQuestions([]);
           setQuizNumber(-1);
-          setTopic("");
+          // setTopic("");
 
           setShowFeedBack(true);
           setFeedback("");
@@ -156,7 +156,7 @@ const WebSocketComponent = () => {
       roomId,
       userId,
       quizNumber,
-      topic,
+      // topic,
       selectedAnswers
     }
 
