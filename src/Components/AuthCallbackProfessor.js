@@ -20,7 +20,7 @@ const AuthCallbackProfessor = () => {
   const exchangeCodeForToken = async (code) => {
     try {
       const response = await fetch(
-        "http://54.226.10.191:3001/api/auth/professor/exchange",
+        "https://54.226.10.191:3001/api/auth/professor/exchange",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
