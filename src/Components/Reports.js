@@ -183,13 +183,16 @@ function Reports() {
                         {topic.score}%
                       </div>
                     </div>
-                    <AspectChart />
+                    
                   </div>
                 ))}
               </div>
             </div>
           ))}
+          <AspectChart />
         </div>
+
+        
       )}
     </>
   );
