@@ -126,7 +126,7 @@ const WebSocketComponent = () => {
 
       socket.send(JSON.stringify(submitFeedbackRequest));
 
-      // setShowFeedBack(false);
+      setShowFeedBack(false);
       setShowErrorMessage(false);
       setErrorMessage("");
     } else {
