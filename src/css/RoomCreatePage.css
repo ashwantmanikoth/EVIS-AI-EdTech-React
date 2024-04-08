@@ -13,11 +13,13 @@
 
 .horizontal-container {
   flex: 1;
+  padding-right:15%;
+  margin-right: 20%;
   /* Allows the containers to grow and take up equal space */
   padding: 10px;
   /* Padding inside the containers for some spacing */
   /* Optionally, you might want to set a min-width to prevent them from becoming too narrow */
-  min-width: 200px;
+  /* min-width: 500px; */
   /* Adjust based on your content needs */
 }
 
@@ -52,16 +54,29 @@
 }
 
 .room-id-display {
-  margin-right: 10%;
-  padding-right: 100px;
-  padding-left: 100px;
+  width: 150%;
+  display: flex;
+  padding-right: 8%;
+  padding-left: 5%;
+  background-color: #f8f9fa;
+  border: 11px solid #ddd;
+  border-radius: 20px;
+  max-height: 480px;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+}
+
+.room-id-home {
+  margin-right: 5%;
+  padding-right: 5%;
+  padding-left: 5%;
   background-color: #f8f9fa;
   border: 11px solid #ddd;
   border-radius: 28px;
   max-height: 520px;
   overflow-y: auto;
   overflow-x: hidden;
-
 }
 
 .quiz-menu {
@@ -121,7 +136,7 @@
   position: relative;
   opacity: 30%;
   top: 30px;
-  left: 290px;
+  left: 500px;
   /* padding: 10px; */
   cursor: pointer;
 }

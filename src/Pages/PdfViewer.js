@@ -134,6 +134,7 @@ const PdfViewer = () => {
   };
 
   const handleEndQuiz = async () => {
+    setQuizStatus(0);
     const quizDetails = {
       roomId,
       quizNumber,
@@ -229,14 +230,23 @@ const PdfViewer = () => {
   );
 
   return (
-    <div>
+    <div className="horizontal-container">
+
+    <div className="room-id-display">
       {file != null ? (
         <div>
           <div className="expand-icon">
             <FontAwesomeIcon icon={faExpandArrowsAlt} />
           </div>
-          <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-            <Page pageNumber={pageNumber} width={250} />
+          <p>
+            Page {pageNumber} of {numPages}
+          </p>
+          <Document
+            file={file}
+            onLoadSuccess={onDocumentLoadSuccess}
+            className="document"
+          >
+            <Page pageNumber={pageNumber} width={280} />
           </Document>
 
           <button
@@ -254,24 +264,7 @@ const PdfViewer = () => {
             Next
           </button>
 
-          <p>
-            Page {pageNumber} of {numPages}
-          </p>
-
           <div className="quiz-menu">
-            {/* To do- on selection itself the docuement should be send to processing */}
-            {/* {isLoading == false ? (
-              <>
-                <button className="btn-create-room" onClick={handleFormSubmit}>
-                  Upload to Extract
-                </button>
-              </>
-            ) : (
-              <>
-                <h4>Uploading....</h4>
-                <div className="spinner"></div>
-              </>
-            )} */}
             <h1>Quiz Details:</h1>
             {quizStatus == 1 ? (
               <div className="horizontal-container">
@@ -286,7 +279,7 @@ const PdfViewer = () => {
               <>
                 {quizStatus == 0 ? (
                   <>
-                    <h2>Starting Quiz....</h2>
+                    <p>Please wait...</p>
                     <div className="spinner"></div>
                   </>
                 ) : (
@@ -321,6 +314,7 @@ const PdfViewer = () => {
           </div>
         </>
       )}
+    </div>
     </div>
   );
 };
