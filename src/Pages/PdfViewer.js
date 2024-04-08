@@ -106,7 +106,6 @@ const PdfViewer = () => {
     let qNum = quizNumber+1,
       qtopic = "AWS";
       console.log("current qNum is"+qNum)
-      console.log("current qNum is"+qNum)
 
     const quizDetails = {
       pageNumber: pageNumber,
