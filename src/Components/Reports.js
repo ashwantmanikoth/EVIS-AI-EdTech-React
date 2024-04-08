@@ -189,11 +189,12 @@ function Reports() {
               </div>
             </div>
           ))}
-          <AspectChart />
+          
         </div>
 
         
       )}
+      <AspectChart />
     </>
   );
 }
