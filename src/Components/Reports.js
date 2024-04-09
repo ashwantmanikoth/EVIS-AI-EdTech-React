@@ -9,7 +9,7 @@ function Reports() {
 
   const [quizzes, setQuizzes] = useState([]);
   const [feedbacks, setFeedbacks] = useState([]);
-  const [data,setData]= useState([]);
+  const [data, setData] = useState([]);
   // const data = [
   //   {
   //     "user_id": {"S": "sreedevi.rw@gmail.com"},
@@ -59,7 +59,6 @@ function Reports() {
         : [],
     }));
   };
-
 
   useEffect(() => {
     async function fetchRooms() {
@@ -144,7 +143,7 @@ function Reports() {
           if (feedbackData) {
             const rawData = feedbackData; // Assuming the response structure contains an items array
             if (rawData) {
-              console.log(rawData)
+              console.log(rawData);
               setData(rawData);
               // const transformQuizData = transformQuizData(rawData);
               // setQuizzes(transformQuizData);
@@ -166,7 +165,7 @@ function Reports() {
   return (
     <>
       <div className="row-button">
-        <h3>Choose Your past room to view Session Report</h3>
+        <h3 style={{ textAlign: "center" }}>Choose Your past room to view Session Report</h3>
         {rooms.map((room) => (
           <button
             key={room.id}
@@ -212,22 +211,21 @@ function Reports() {
                         {topic.score}%
                       </div>
                     </div>
-                    
                   </div>
                 ))}
               </div>
             </div>
           ))}
-          
         </div>
-
-        
       )}
-      {data && (<div>
-      <h1>Aspect Based Performance Chart</h1>
-      <AspectChart responseData={data} />
-    </div>)}
-      
+      {data && (
+        <div>
+          <h1 style={{ textAlign: "center" }}>
+            Aspect Based Performance Chart
+          </h1>
+          <AspectChart responseData={data} />
+        </div>
+      )}
     </>
   );
 }
