@@ -1,5 +1,12 @@
 pipeline { 
   agent any 
+  tools {
+        nodejs "NodeJS_16" // Replace with the Node.js version configured in Jenkins
+    }
+    environment {
+        // Set environment variables if needed
+        NODE_ENV = 'production' // Adjust as per your requirement
+    }
   stages {
     stage("Install dependencies") {
       steps {
