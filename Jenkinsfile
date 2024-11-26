@@ -1,36 +1,66 @@
-pipeline { 
-  agent any 
-  tools {
-        nodejs "NodeJS_16" // Replace with the Node.js version configured in Jenkins
+pipeline {
+    agent any
+    options {
+        // Enables to restart only failed stages
+        skipDefaultCheckout(true)
+        preserveStashes()
     }
     environment {
-        // Set environment variables if needed
-        NODE_ENV = 'production' // Adjust as per your requirement
+        NODE_ENV = 'production'
     }
-  stages {
-    stage("Install dependencies") {
-      steps {
-        echo 'Installing dependencies'
-        sh 'npm install' 
-      }
+    tools {
+        nodejs "NodeJS_16" // Replace with your Node.js installation
     }
-    stage("Build") {
-      steps {
-        echo 'Building the application'
-        sh 'npm run build' 
-      }
+    stages {
+        stage("Install Dependencies") {
+            when {
+                not { stageResult 'Install Dependencies' succeeded } // Rerun only if failed
+            }
+            steps {
+                echo 'Installing dependencies...'
+                sh 'npm ci' // `npm ci` is faster for clean installs
+                stash includes: 'node_modules/**/*', name: 'node_modules'
+            }
+        }
+        stage("Build") {
+            when {
+                not { stageResult 'Build' succeeded } // Rerun only if failed
+            }
+            steps {
+                echo 'Building the application...'
+                unstash 'node_modules' // Reuse stashed dependencies
+                sh 'npm run build'
+            }
+        }
+        stage("Test") {
+            when {
+                not { stageResult 'Test' succeeded } // Rerun only if failed
+            }
+            steps {
+                echo 'Testing the application...'
+                unstash 'node_modules' // Reuse stashed dependencies
+                sh 'npm test'
+            }
+        }
+        stage("Deploy") {
+            when {
+                not { stageResult 'Deploy' succeeded } // Rerun only if failed
+            }
+            steps {
+                echo 'Deploying the application...'
+                sh 'npm run deploy'
+            }
+        }
     }
-    stage("Test") {
-      steps {
-        echo 'Testing the application'
-        
-      }
+    post {
+        always {
+            echo 'Pipeline completed.'
+        }
+        success {
+            echo 'Pipeline completed successfully.'
+        }
+        failure {
+            echo 'Pipeline failed.'
+        }
     }
-    stage("Deploy") {
-      steps {
-        echo 'Deploying the application'
-       
-      }
-    }
-  }
 }
