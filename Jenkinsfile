@@ -1,63 +1,58 @@
 pipeline {
     agent any
     options {
-        // Enables to restart only failed stages
-        skipDefaultCheckout(true)
-        preserveStashes()
+        skipDefaultCheckout(true) // Avoid unnecessary checkouts
+        preserveStashes()         // Keep stashed files for reuse
     }
     environment {
         NODE_ENV = 'production'
     }
     tools {
-        nodejs "NodeJS_16" // Replace with your Node.js installation
+        nodejs "NodeJS_16" // Replace with your configured NodeJS tool
     }
     stages {
         stage("Install Dependencies") {
-            when {
-                not { stageResult 'Install Dependencies' succeeded } // Rerun only if failed
-            }
             steps {
-                echo 'Installing dependencies...'
-                sh 'npm ci' // `npm ci` is faster for clean installs
-                stash includes: 'node_modules/**/*', name: 'node_modules'
+                script {
+                    try {
+                        unstash 'node_modules' // Attempt to unstash cached dependencies
+                        echo 'Reusing cached dependencies...'
+                    } catch (Exception e) {
+                        echo 'Installing dependencies...'
+                        sh 'npm ci'
+                        stash includes: 'node_modules/**/*', name: 'node_modules'
+                    }
+                }
             }
         }
         stage("Build") {
-            when {
-                not { stageResult 'Build' succeeded } // Rerun only if failed
-            }
             steps {
                 echo 'Building the application...'
-                unstash 'node_modules' // Reuse stashed dependencies
+                unstash 'node_modules'
                 sh 'npm run build'
             }
         }
         stage("Test") {
-            when {
-                not { stageResult 'Test' succeeded } // Rerun only if failed
-            }
             steps {
                 echo 'Testing the application...'
-                unstash 'node_modules' // Reuse stashed dependencies
+                unstash 'node_modules'
                 sh 'npm test'
             }
         }
         stage("Deploy") {
-            when {
-                not { stageResult 'Deploy' succeeded } // Rerun only if failed
-            }
             steps {
                 echo 'Deploying the application...'
+                unstash 'node_modules'
                 sh 'npm run deploy'
             }
         }
     }
     post {
         always {
-            echo 'Pipeline completed.'
+            echo 'Pipeline execution complete.'
         }
         success {
-            echo 'Pipeline completed successfully.'
+            echo 'Pipeline executed successfully.'
         }
         failure {
             echo 'Pipeline failed.'
