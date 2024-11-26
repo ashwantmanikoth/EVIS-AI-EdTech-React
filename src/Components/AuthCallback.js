@@ -1,31 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AuthCallback = () => {
   const navigate = useNavigate();
-  console.log("testtt");
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get("code");
-
-    if (code) {
-      // Now, send this code to your Express backend to exchange it for tokens
-      exchangeCodeForToken(code);
-    } else {
-      // Handle error or redirect
-      navigate("/");
-    }
-  }, [navigate]);
-
-  const exchangeCodeForToken = async (code) => {
+  const exchangeCodeForToken = useCallback(async (code) => {
     try {
-      console.log("2");
-      const response = await fetch("https://54.226.10.191:3001/api/auth/exchange", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/api/auth/exchange`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code }),
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to exchange code for tokens");
 
@@ -41,9 +29,20 @@ const AuthCallback = () => {
       navigate("/");
     } catch (error) {
       console.error("Error exchanging code:", error);
+      navigate("/error"); // Navigate to an error page if needed
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code");
+
+    if (code) {
+      exchangeCodeForToken(code);
+    } else {
       navigate("/");
     }
-  };
+  }, [exchangeCodeForToken, navigate]);
 
   return <div>Loading...</div>;
 };
